@@ -77,56 +77,55 @@ export default function ListLayoutWithTags({
 
   return (
     <>
-    <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-    {!displayPosts.length && 'No posts found.'}
-    {displayPosts.map((post) => {
-      const { slug, date, title, summary, tags, readingTime } = post
-      return (              
-        <li key={slug} className="py-12">
-          <Link href={`/blog/${slug}`} className="block">
-          <article>
-            <div className="space-y-2 xl:grid xl:grid-cols-4 xl:items-baseline xl:space-y-0">
-              <div className="space-y-5 xl:col-span-3">
-                <div className="space-y-6">
-                  <div>
-                    <h2 className="text-2xl font-bold leading-8 tracking-tight">
-                      {title}
-                    </h2>
+      <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+        {!displayPosts.length && 'No posts found.'}
+        {displayPosts.map((post) => {
+          const { slug, date, title, summary, tags, readingTime } = post
+          return (
+            <li key={slug} className="py-12">
+              <Link href={`/blog/${slug}`} className="block">
+                <article>
+                  <div className="space-y-2 xl:grid xl:grid-cols-4 xl:items-baseline xl:space-y-0">
+                    <div className="space-y-5 xl:col-span-3">
+                      <div className="space-y-6">
+                        <div>
+                          <h2 className="text-2xl font-bold leading-8 tracking-tight">{title}</h2>
+                        </div>
+                        <div className="prose max-w-none text-gray-500 dark:text-gray-400">
+                          {summary}
+                        </div>
+                      </div>
+                      <dl className="flex items-center gap-2.5 text-gray-500 dark:text-gray-400">
+                        <dt className="sr-only">Published on</dt>
+                        <dd className="text-base text-sm font-medium leading-6 text-gray-500 dark:text-gray-400">
+                          <time dateTime={date}>{formatDate(date, siteMetadata.locale)}</time>
+                        </dd>
+                        <div className="dark:bg-gray-6500 h-4 w-px bg-gray-300 opacity-30"></div>{' '}
+                        {/* Separator */}
+                        <dt className="sr-only">Estimated reading time</dt>
+                        <dd className="text-base text-sm font-medium leading-6 text-gray-500 dark:text-gray-400">
+                          {readingTime.text}
+                        </dd>
+                      </dl>
+                      <div className="text-base font-medium leading-6">
+                        <div className="flex flex-wrap">
+                          {tags.map((tag) => (
+                            <Tag key={tag} text={tag} />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="prose max-w-none text-gray-500 dark:text-gray-400">
-                    {summary}
-                  </div>
-                </div>
-                <dl className="flex items-center text-gray-500 dark:text-gray-400 gap-2.5">
-                  <dt className="sr-only">Published on</dt>
-                  <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400 text-sm">
-                    <time dateTime={date}>{formatDate(date, siteMetadata.locale)}</time>
-                  </dd>
-                  <div className="w-px h-4 bg-gray-300 dark:bg-gray-6500 opacity-30"></div> {/* Separator */}
-                  <dt className="sr-only">Estimated reading time</dt>
-                  <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400 text-sm">
-                    {readingTime.text}
-                  </dd>
-                </dl>
-                <div className="text-base font-medium leading-6">
-                  <div className="flex flex-wrap">
-                    {tags.map((tag) => (
-                      <Tag key={tag} text={tag} />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-          </Link>
-        </li>
-      )
-    })}
-  </ul>
-  {pagination && pagination.totalPages > 1 && (
-    <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} />
-  )}
-  </>
+                </article>
+              </Link>
+            </li>
+          )
+        })}
+      </ul>
+      {pagination && pagination.totalPages > 1 && (
+        <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} />
+      )}
+    </>
     // <>
     //   <div>
     //     <div className="pb-6 pt-6">

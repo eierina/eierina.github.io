@@ -1,0 +1,442 @@
+---
+title: In REVM We Rust - Introducion
+date: '2024-10-08'
+tags: ['REVM', 'EVM', 'Rust']
+draft: false
+summary: "Explore the architecture and key features of REVM, an Ethereum Virtual Machine by Paradigm that's part of the Reth framework. This blog post covers REVM's transaction and block components, hook functions, and opcode management, as well as practical applications for simulating local EVM environments. With a modular design, speed, and compatibility, REVM is ideal for blockchain developers using Rust. This is the first post in a series on REVM and its capabilities."
+---
+
+### Introduction to REVM: A Walkthrough for Blockchain Developers
+
+Welcome to this detailed guide on REVM, a high-performance Ethereum Virtual Machine (EVM) developed by Paradigm as part of the Reth framework. In this walkthrough, we'll break down REVM's architecture, core components, and unique features, helping you understand how to use it for blockchain development. This guide is intended for students and developers who are already familiar with blockchain concepts and want to learn more about REVM. We'll cover topics like transactions, opcodes, gas management, and more, using illustrations to make the concepts easier to follow.
+
+```Rust
+/// EVM instance containing both internal EVM context and external context
+/// and the handler that dictates the logic of EVM (or hardfork specification).
+pub struct Evm<'a, EXT, DB: Database> {
+    /// Context of execution, containing both EVM and external context.
+    pub context: Context<EXT, DB>,
+    /// Handler is a component of the of EVM that contains all the logic. Handler contains specification id
+    /// and it different depending on the specified fork.
+    pub handler: Handler<'a, Context<EXT, DB>, EXT, DB>,
+}
+```
+
+```Rust
+/// Main Context structure that contains both EvmContext and External context.
+pub struct Context<EXT, DB: Database> {
+    /// Evm Context (internal context).
+    pub evm: EvmContext<DB>,
+    /// External contexts.
+    pub external: EXT,
+}
+```
+
+```Rust
+/// EVM context that contains the inner EVM context and precompiles.
+pub struct EvmContext<DB: Database> {
+    /// Inner EVM context.
+    pub inner: InnerEvmContext<DB>,
+    /// Precompiles that are available for evm.
+    pub precompiles: ContextPrecompiles<DB>,
+}
+```
+
+```Rust
+/// EVM contexts contains data that EVM needs for execution.
+#[derive(Debug)]
+pub struct InnerEvmContext<DB: Database> {
+    /// EVM Environment contains all the information about config, block and transaction that
+    /// evm needs.
+    pub env: Box<Env>,
+    /// EVM State with journaling support.
+    pub journaled_state: JournaledState,
+    /// Database to load data from.
+    pub db: DB,
+    /// Error that happened during execution.
+    pub error: Result<(), EVMError<DB::Error>>,
+    /// Used as temporary value holder to store L1 block info.
+    #[cfg(feature = "optimism")]
+    pub l1_block_info: Option<crate::optimism::L1BlockInfo>,
+}
+```
+
+```Rust
+/// EVM environment configuration.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct Env {
+    /// Configuration of the EVM itself.
+    pub cfg: CfgEnv,
+    /// Configuration of the block the transaction is in.
+    pub block: BlockEnv,
+    /// Configuration of the transaction that is being executed.
+    pub tx: TxEnv,
+}
+```
+
+```Rust
+/// EVM configuration.
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Clone, Debug, Eq, PartialEq)]
+#[non_exhaustive]
+pub struct CfgEnv {
+    /// Chain ID of the EVM, it will be compared to the transaction's Chain ID.
+    /// Chain ID is introduced EIP-155
+    pub chain_id: u64,
+    /// KZG Settings for point evaluation precompile. By default, this is loaded from the ethereum mainnet trusted setup.
+    #[cfg(any(feature = "c-kzg", feature = "kzg-rs"))]
+    #[cfg_attr(feature = "serde", serde(skip))]
+    pub kzg_settings: crate::kzg::EnvKzgSettings,
+    /// Bytecode that is created with CREATE/CREATE2 is by default analysed and jumptable is created.
+    /// This is very beneficial for testing and speeds up execution of that bytecode if called multiple times.
+    ///
+    /// Default: Analyse
+    pub perf_analyse_created_bytecodes: AnalysisKind,
+    /// If some it will effects EIP-170: Contract code size limit. Useful to increase this because of tests.
+    /// By default it is 0x6000 (~25kb).
+    pub limit_contract_code_size: Option<usize>,
+    /// A hard memory limit in bytes beyond which [crate::result::OutOfGasError::Memory] cannot be resized.
+    ///
+    /// In cases where the gas limit may be extraordinarily high, it is recommended to set this to
+    /// a sane value to prevent memory allocation panics. Defaults to `2^32 - 1` bytes per
+    /// EIP-1985.
+    #[cfg(feature = "memory_limit")]
+    pub memory_limit: u64,
+    /// Skip balance checks if true. Adds transaction cost to balance to ensure execution doesn't fail.
+    #[cfg(feature = "optional_balance_check")]
+    pub disable_balance_check: bool,
+    /// There are use cases where it's allowed to provide a gas limit that's higher than a block's gas limit. To that
+    /// end, you can disable the block gas limit validation.
+    /// By default, it is set to `false`.
+    #[cfg(feature = "optional_block_gas_limit")]
+    pub disable_block_gas_limit: bool,
+    /// EIP-3607 rejects transactions from senders with deployed code. In development, it can be desirable to simulate
+    /// calls from contracts, which this setting allows.
+    /// By default, it is set to `false`.
+    #[cfg(feature = "optional_eip3607")]
+    pub disable_eip3607: bool,
+    /// Disables all gas refunds. This is useful when using chains that have gas refunds disabled e.g. Avalanche.
+    /// Reasoning behind removing gas refunds can be found in EIP-3298.
+    /// By default, it is set to `false`.
+    #[cfg(feature = "optional_gas_refund")]
+    pub disable_gas_refund: bool,
+    /// Disables base fee checks for EIP-1559 transactions.
+    /// This is useful for testing method calls with zero gas price.
+    /// By default, it is set to `false`.
+    #[cfg(feature = "optional_no_base_fee")]
+    pub disable_base_fee: bool,
+    /// Disables the payout of the reward to the beneficiary.
+    /// By default, it is set to `false`.
+    #[cfg(feature = "optional_beneficiary_reward")]
+    pub disable_beneficiary_reward: bool,
+}
+```
+
+```Rust
+/// The block environment.
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct BlockEnv {
+    /// The number of ancestor blocks of this block (block height).
+    pub number: U256,
+    /// Coinbase or miner or address that created and signed the block.
+    ///
+    /// This is the receiver address of all the gas spent in the block.
+    pub coinbase: Address,
+
+    /// The timestamp of the block in seconds since the UNIX epoch.
+    pub timestamp: U256,
+    /// The gas limit of the block.
+    pub gas_limit: U256,
+    /// The base fee per gas, added in the London upgrade with [EIP-1559].
+    ///
+    /// [EIP-1559]: https://eips.ethereum.org/EIPS/eip-1559
+    pub basefee: U256,
+    /// The difficulty of the block.
+    ///
+    /// Unused after the Paris (AKA the merge) upgrade, and replaced by `prevrandao`.
+    pub difficulty: U256,
+    /// The output of the randomness beacon provided by the beacon chain.
+    ///
+    /// Replaces `difficulty` after the Paris (AKA the merge) upgrade with [EIP-4399].
+    ///
+    /// NOTE: `prevrandao` can be found in a block in place of `mix_hash`.
+    ///
+    /// [EIP-4399]: https://eips.ethereum.org/EIPS/eip-4399
+    pub prevrandao: Option<B256>,
+    /// Excess blob gas and blob gasprice.
+    /// See also [`crate::calc_excess_blob_gas`]
+    /// and [`calc_blob_gasprice`].
+    ///
+    /// Incorporated as part of the Cancun upgrade via [EIP-4844].
+    ///
+    /// [EIP-4844]: https://eips.ethereum.org/EIPS/eip-4844
+    pub blob_excess_gas_and_price: Option<BlobExcessGasAndPrice>,
+}
+```
+
+```Rust
+/// The transaction environment.
+#[derive(Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct TxEnv {
+    /// Caller aka Author aka transaction signer.
+    pub caller: Address,
+    /// The gas limit of the transaction.
+    pub gas_limit: u64,
+    /// The gas price of the transaction.
+    pub gas_price: U256,
+    /// The destination of the transaction.
+    pub transact_to: TxKind,
+    /// The value sent to `transact_to`.
+    pub value: U256,
+    /// The data of the transaction.
+    pub data: Bytes,
+
+    /// The nonce of the transaction.
+    ///
+    /// Caution: If set to `None`, then nonce validation against the account's nonce is skipped: [InvalidTransaction::NonceTooHigh] and [InvalidTransaction::NonceTooLow]
+    pub nonce: Option<u64>,
+
+    /// The chain ID of the transaction. If set to `None`, no checks are performed.
+    ///
+    /// Incorporated as part of the Spurious Dragon upgrade via [EIP-155].
+    ///
+    /// [EIP-155]: https://eips.ethereum.org/EIPS/eip-155
+    pub chain_id: Option<u64>,
+
+    /// A list of addresses and storage keys that the transaction plans to access.
+    ///
+    /// Added in [EIP-2930].
+    ///
+    /// [EIP-2930]: https://eips.ethereum.org/EIPS/eip-2930
+    pub access_list: Vec<AccessListItem>,
+
+    /// The priority fee per gas.
+    ///
+    /// Incorporated as part of the London upgrade via [EIP-1559].
+    ///
+    /// [EIP-1559]: https://eips.ethereum.org/EIPS/eip-1559
+    pub gas_priority_fee: Option<U256>,
+
+    /// The list of blob versioned hashes. Per EIP there should be at least
+    /// one blob present if [`Self::max_fee_per_blob_gas`] is `Some`.
+    ///
+    /// Incorporated as part of the Cancun upgrade via [EIP-4844].
+    ///
+    /// [EIP-4844]: https://eips.ethereum.org/EIPS/eip-4844
+    pub blob_hashes: Vec<B256>,
+
+    /// The max fee per blob gas.
+    ///
+    /// Incorporated as part of the Cancun upgrade via [EIP-4844].
+    ///
+    /// [EIP-4844]: https://eips.ethereum.org/EIPS/eip-4844
+    pub max_fee_per_blob_gas: Option<U256>,
+
+    /// List of authorizations, that contains the signature that authorizes this
+    /// caller to place the code to signer account.
+    ///
+    /// Set EOA account code for one transaction
+    ///
+    /// [EIP-Set EOA account code for one transaction](https://eips.ethereum.org/EIPS/eip-7702)
+    pub authorization_list: Option<AuthorizationList>,
+
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    #[cfg(feature = "optimism")]
+    /// Optimism fields.
+    pub optimism: OptimismFields,
+}
+```
+
+other
+
+```Rust
+/// Handler acts as a proxy and allow to define different behavior for different
+/// sections of the code. This allows nice integration of different chains or
+/// to disable some mainnet behavior.
+pub struct Handler<'a, H: Host + 'a, EXT, DB: Database> {
+    /// Handler configuration.
+    pub cfg: HandlerCfg,
+    /// Instruction table type.
+    pub instruction_table: InstructionTables<'a, H>,
+    /// Registers that will be called on initialization.
+    pub registers: Vec<HandleRegisters<'a, EXT, DB>>,
+    /// Validity handles.
+    pub validation: ValidationHandler<'a, EXT, DB>,
+    /// Pre execution handle.
+    pub pre_execution: PreExecutionHandler<'a, EXT, DB>,
+    /// Post Execution handle.
+    pub post_execution: PostExecutionHandler<'a, EXT, DB>,
+    /// Execution loop that handles frames.
+    pub execution: ExecutionHandler<'a, EXT, DB>,
+}
+```
+
+```Rust
+/// Handler acts as a proxy and allow to define different behavior for different
+/// sections of the code. This allows nice integration of different chains or
+/// to disable some mainnet behavior.
+pub struct Handler<'a, H: Host + 'a, EXT, DB: Database> {
+    /// Handler configuration.
+    pub cfg: HandlerCfg,
+    /// Instruction table type.
+    pub instruction_table: InstructionTables<'a, H>,
+    /// Registers that will be called on initialization.
+    pub registers: Vec<HandleRegisters<'a, EXT, DB>>,
+    /// Validity handles.
+    pub validation: ValidationHandler<'a, EXT, DB>,
+    /// Pre execution handle.
+    pub pre_execution: PreExecutionHandler<'a, EXT, DB>,
+    /// Post Execution handle.
+    pub post_execution: PostExecutionHandler<'a, EXT, DB>,
+    /// Execution loop that handles frames.
+    pub execution: ExecutionHandler<'a, EXT, DB>,
+}
+```
+
+```Rust
+/// Handler configuration fields. It is used to configure the handler.
+/// It contains specification id and the Optimism related field if
+/// optimism feature is enabled.
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
+pub struct HandlerCfg {
+    /// Specification identification.
+    pub spec_id: SpecId,
+    /// Optimism related field, it will append the Optimism handle register to the EVM.
+    #[cfg(feature = "optimism")]
+    pub is_optimism: bool,
+}
+```
+
+```Rust
+/// Either a plain, static instruction table, or a boxed, dynamic instruction table.
+///
+/// Note that `Plain` variant is about 10-20% faster in Interpreter execution.
+pub enum InstructionTables<'a, H: ?Sized> {
+    Plain(InstructionTable<H>),
+    Boxed(BoxedInstructionTable<'a, H>),
+}
+```
+
+```Rust
+
+```
+
+```Rust
+
+```
+
+```Rust
+
+```
+
+```Rust
+
+```
+
+```Rust
+
+```
+
+```Rust
+
+```
+
+```Rust
+
+```
+
+```Rust
+
+```
+
+```Rust
+
+```
+
+### What is REVM?
+
+REVM is a Rust-based implementation of the Ethereum Virtual Machine. It is a crucial part of Reth, an Ethereum client built by Paradigm. While REVM is integrated with the Reth client, it can also be used independently to execute smart contracts, simulate blockchain transactions, or conduct custom blockchain experiments. This flexibility makes REVM useful for developers who need a modular EVM to fit into various blockchain projects.
+
+REVM has evolved significantly from its early versions. Initially launched as an alpha, it has now reached a stable beta stage, with major improvements in performance and reliability. During the Cancun upgrade, REVM underwent significant enhancements, setting new standards for EVM implementations.
+
+REVM's design focuses on modularity, making it easy for developers to extend and adapt its features. This modular approach is particularly useful for creating specialized blockchain tools or integrating REVM into other Ethereum projects.
+
+### Key Components of REVM
+
+REVM relies on two main components: **transaction input** and **block context**. Understanding these inputs is essential for working effectively with an EVM.
+
+- **Transaction Input**: Transactions in REVM require data like the gas limit, gas price, sender and receiver addresses, value, and calldata. These inputs provide the necessary context to execute smart contracts.
+
+- **Block Input**: Block context, such as the block number, difficulty, and timestamp, is also required to simulate state changes during transaction execution. This context helps REVM recreate the environment of the Ethereum blockchain, ensuring that the simulation results are accurate.
+
+Think of REVM as an engine that takes transaction instructions and processes them using the block input to replicate the behavior of the real blockchain. This way, simulations behave just like actual network transactions.
+
+![Illustration of REVM Inputs](path/to/illustration_inputs.png)
+
+### Core Data Structures and Modules
+
+The main data structure in REVM is a **struct** that stores details about transactions and blocks. Rust's trait system is used to define components like storage and logging, providing flexibility for developers to customize and extend.
+
+#### Database and Account State
+
+REVM uses a backend **database** interface to manage the blockchain state, including account balances, storage, and contract code. Each account in REVM has an associated storage model that tracks its data.
+
+The REVM database interface provides commands to:
+
+- Retrieve account balances.
+- Access storage values by key.
+- Retrieve contract bytecode by address.
+
+This modular design allows developers to use different types of database implementations, such as an in-memory database for testing or a persistent one for production. REVM's database system is highly efficient and integrates well with existing Ethereum clients.
+
+### Transaction Execution and Hooks
+
+A unique feature of REVM is its support for **hook functions**. Hooks let developers insert custom logic at different stages of transaction execution, which can be extremely helpful for monitoring or modifying execution behavior. This is particularly valuable for debugging, auditing, or adding security features.
+
+For instance, hooks can be used to trace each opcode executed, creating a detailed log of operations, or to add checks that prevent malicious actions. This flexibility makes REVM an ideal tool for building custom solutions for simulation, auditing, and security analysis.
+
+![Illustration of Hook Function Integration](path/to/illustration_hooks.png)
+
+### Opcode Implementations in REVM
+
+Opcodes are low-level instructions that dictate how smart contracts are executed in the EVM. REVM efficiently manages opcodes such as **CALL**, **CREATE**, **DELEGATECALL**, and **STATICCALL**, and optimizes memory operations like **MCOPY** for better performance.
+
+One particularly important opcode is **CREATE2**, which allows for deterministic contract deployment addresses. This provides developers with more control over where a contract will be deployed, which is useful for scaling or sharding scenarios.
+
+REVM also includes **TLOAD** and **TSTORE** opcodes for managing temporary data that doesn't need to be stored permanently. Using these opcodes helps reduce gas costs by avoiding unnecessary state changes.
+
+Moreover, REVM supports the newest Ethereum opcodes introduced as part of recent upgrades, such as those for accessing blob storage (part of EIP-4844 for improved scalability). This ensures that REVM remains compatible with the latest Ethereum developments.
+
+### Gas Management and Optimizations
+
+Gas management is critical for executing blockchain transactions efficiently. REVM calculates gas usage in a way that reduces overhead while following Ethereum's gas rules. The engine uses Rust's low-level memory control to achieve faster execution than many other EVM implementations.
+
+### Why Use REVM?
+
+- **Customization**: REVM lets developers modify its components, from storage models to hooks and opcodes, to meet specific needs.
+- **Speed**: Rust's performance and memory safety features make REVM fast and reliable for handling complex state changes.
+- **Compatibility**: REVM is compatible with existing Ethereum tools, making it easy to integrate into current workflows for testing, research, or production.
+- **Modular Design**: The modular architecture of REVM allows it to be adapted for many blockchain applications, whether as a full Ethereum client or a specialized development tool.
+
+### Practical Use Case: Simulating a Local EVM Environment
+
+One major benefit of REVM is its ability to simulate an EVM environment locally. Suppose you need to test a series of transactions without broadcasting them to the Ethereum mainnet. With REVM, you can create a local simulation by importing the blockchain state from a specific block (e.g., using a mainnet fork) and running transactions against it. This allows you to test scenarios like arbitrage opportunities or smart contract vulnerabilities safely.
+
+Another practical use case is replaying historical transactions to analyze their impact on the blockchain state. By simulating the blockchain as it was at a certain point in time, you can recreate specific scenarios, which is invaluable for debugging and security analysis.
+
+### Conclusion
+
+REVM is a versatile tool for blockchain development, testing, and research. Its modularity, speed, and compatibility make it a strong choice for developers who want to leverage Rust for blockchain projects. Whether you're auditing a smart contract, building a decentralized application, or exploring Ethereum’s inner workings, REVM provides a solid foundation.
+
+If you're interested in learning more about REVM, visit the [official GitHub repository](https://github.com/paradigmxyz/revm) for detailed setup instructions and examples. With Rust’s efficiency and REVM’s powerful features, the potential applications are vast.
+
+![Illustration of REVM Workflow](path/to/illustration_workflow.png)
+
+#### Next Steps
+
+To start using REVM, set up the environment on your local machine and experiment with the modules provided. The [REVM GitHub repository](https://github.com/paradigmxyz/revm) contains all the information you need to get started.
+
+Feel free to share your experiences in the comments if you've used REVM or have questions. Let’s continue building and exploring blockchain technology together!

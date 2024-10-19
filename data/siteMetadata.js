@@ -3,7 +3,8 @@ const siteMetadata = {
   title: 'Block::ZERO',
   author: 'Edoardo Ierina',
   headerTitle: 'Block::ZERO',
-  description: 'A developer\'s take on mastery and exploration of blockchain technology for fun and profit.',
+  description:
+    "A developer's take on mastery and exploration of blockchain technology for fun and profit.",
   language: 'en-us',
   theme: 'system', // system, dark or light
   siteUrl: 'https://eierina.github.io',
