@@ -43,6 +43,28 @@ jobs:
       # 5. Install dependencies
       - run: yarn
 
+      # 5-1/2. Debug Environment Variables (Optional)
+      #    **Remove** or **comment out** this step if any variables are sensitive.
+      - name: Debug Environment Variables
+        run: |
+          echo "NEXT_PUBLIC_GISCUS_REPO: $NEXT_PUBLIC_GISCUS_REPO"
+          echo "NEXT_PUBLIC_GISCUS_REPOSITORY_ID: $NEXT_PUBLIC_GISCUS_REPOSITORY_ID"
+          echo "NEXT_PUBLIC_GISCUS_CATEGORY: $NEXT_PUBLIC_GISCUS_CATEGORY"
+          echo "NEXT_PUBLIC_GISCUS_CATEGORY_ID: $NEXT_PUBLIC_GISCUS_CATEGORY_ID"
+          echo "MAILCHIMP_API_KEY: $MAILCHIMP_API_KEY"
+          echo "MAILCHIMP_API_SERVER: $MAILCHIMP_API_SERVER"
+          echo "MAILCHIMP_AUDIENCE_ID: $MAILCHIMP_AUDIENCE_ID"
+          echo "NEXT_UMAMI_ID: $NEXT_UMAMI_ID"
+        env:
+          NEXT_PUBLIC_GISCUS_REPO: ${{ vars.NEXT_PUBLIC_GISCUS_REPO }}
+          NEXT_PUBLIC_GISCUS_REPOSITORY_ID: ${{ vars.NEXT_PUBLIC_GISCUS_REPOSITORY_ID }}
+          NEXT_PUBLIC_GISCUS_CATEGORY: ${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY }}
+          NEXT_PUBLIC_GISCUS_CATEGORY_ID: ${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY_ID }}
+          MAILCHIMP_API_KEY: ${{ vars.MAILCHIMP_API_KEY }}
+          MAILCHIMP_API_SERVER: ${{ vars.MAILCHIMP_API_SERVER }}
+          MAILCHIMP_AUDIENCE_ID: ${{ vars.MAILCHIMP_AUDIENCE_ID }}
+          NEXT_UMAMI_ID: ${{ vars.NEXT_UMAMI_ID }}
+
       # 6. Build the Next.js site
       - run: yarn build
         env:
