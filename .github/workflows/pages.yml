@@ -49,6 +49,14 @@ jobs:
           EXPORT: 1
           UNOPTIMIZED: 1
           BASE_PATH: ${{ steps.configurepages.outputs.base_path }}
+          NEXT_PUBLIC_GISCUS_REPO: ${{ vars.NEXT_PUBLIC_GISCUS_REPO }}
+          NEXT_PUBLIC_GISCUS_REPOSITORY_ID: ${{ vars.NEXT_PUBLIC_GISCUS_REPOSITORY_ID }}
+          NEXT_PUBLIC_GISCUS_CATEGORY: ${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY }}
+          NEXT_PUBLIC_GISCUS_CATEGORY_ID: ${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY_ID }}
+          MAILCHIMP_API_KEY: ${{ vars.MAILCHIMP_API_KEY }}
+          MAILCHIMP_API_SERVER: ${{ vars.MAILCHIMP_API_SERVER }}
+          MAILCHIMP_AUDIENCE_ID: ${{ vars.MAILCHIMP_AUDIENCE_ID }}
+          NEXT_UMAMI_ID: ${{ vars.NEXT_UMAMI_ID }}
       
       # 7. Upload build artifacts for deployment
       - name: Upload artifact
