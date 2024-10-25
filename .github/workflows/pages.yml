@@ -46,6 +46,7 @@ jobs:
           MAILCHIMP_API_KEY: ${{ vars.MAILCHIMP_API_KEY }}
           MAILCHIMP_API_SERVER: ${{ vars.MAILCHIMP_API_SERVER }}
           MAILCHIMP_AUDIENCE_ID: ${{ vars.MAILCHIMP_AUDIENCE_ID }}
+          NEXT_UMAMI_SCRIPT_SRC: ${{ vars.NEXT_UMAMI_SCRIPT_SRC }}
           NEXT_UMAMI_ID: ${{ vars.NEXT_UMAMI_ID }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
