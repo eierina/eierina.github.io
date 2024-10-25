@@ -19,20 +19,13 @@ jobs:
     runs-on: ubuntu-latest
     environment: github-pages
     steps:
-      # 1. Checkout the repository
       - uses: actions/checkout@v4
-      
-      # 2. Set up Node.js environment
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: yarn
-      
-      # 3. Configure GitHub Pages environment
       - id: configurepages
         uses: actions/configure-pages@v5
-      
-      # 4. Restore Next.js cache for faster builds
       - name: Restore cache
         uses: actions/cache@v4
         with:
@@ -40,33 +33,7 @@ jobs:
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
-      
-      # 5. Install dependencies
       - run: yarn
-
-      # 5-1/2. Debug Environment Variables (Optional)
-      #    **Remove** or **comment out** this step if any variables are sensitive.
-      - name: Debug Environment Variables
-        run: |
-          echo "NEXT_PUBLIC_GISCUS_REPO: $NEXT_PUBLIC_GISCUS_REPO"
-          echo "NEXT_PUBLIC_GISCUS_REPOSITORY_ID: $NEXT_PUBLIC_GISCUS_REPOSITORY_ID"
-          echo "NEXT_PUBLIC_GISCUS_CATEGORY: $NEXT_PUBLIC_GISCUS_CATEGORY"
-          echo "NEXT_PUBLIC_GISCUS_CATEGORY_ID: $NEXT_PUBLIC_GISCUS_CATEGORY_ID"
-          echo "MAILCHIMP_API_KEY: $MAILCHIMP_API_KEY"
-          echo "MAILCHIMP_API_SERVER: $MAILCHIMP_API_SERVER"
-          echo "MAILCHIMP_AUDIENCE_ID: $MAILCHIMP_AUDIENCE_ID"
-          echo "NEXT_UMAMI_ID: $NEXT_UMAMI_ID"
-        env:
-          NEXT_PUBLIC_GISCUS_REPO: ${{ vars.NEXT_PUBLIC_GISCUS_REPO }}
-          NEXT_PUBLIC_GISCUS_REPOSITORY_ID: ${{ vars.NEXT_PUBLIC_GISCUS_REPOSITORY_ID }}
-          NEXT_PUBLIC_GISCUS_CATEGORY: ${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY }}
-          NEXT_PUBLIC_GISCUS_CATEGORY_ID: ${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY_ID }}
-          MAILCHIMP_API_KEY: ${{ vars.MAILCHIMP_API_KEY }}
-          MAILCHIMP_API_SERVER: ${{ vars.MAILCHIMP_API_SERVER }}
-          MAILCHIMP_AUDIENCE_ID: ${{ vars.MAILCHIMP_AUDIENCE_ID }}
-          NEXT_UMAMI_ID: ${{ vars.NEXT_UMAMI_ID }}
-
-      # 6. Build the Next.js site
       - run: yarn build
         env:
           EXPORT: 1
@@ -80,8 +47,6 @@ jobs:
           MAILCHIMP_API_SERVER: ${{ vars.MAILCHIMP_API_SERVER }}
           MAILCHIMP_AUDIENCE_ID: ${{ vars.MAILCHIMP_AUDIENCE_ID }}
           NEXT_UMAMI_ID: ${{ vars.NEXT_UMAMI_ID }}
-      
-      # 7. Upload build artifacts for deployment
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -94,6 +59,5 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      # 8. Deploy the site using GitHub Pages action
       - uses: actions/deploy-pages@v4
         id: deployment
