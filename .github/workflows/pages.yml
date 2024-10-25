@@ -42,23 +42,15 @@ jobs:
       
       # 5. Install dependencies
       - run: yarn
-      
-      # 6. Debug Environment Variables (Optional)
-      #    Remove or comment out this step if NEXT_UMAMI_ID is sensitive
-      - name: Debug Environment Variables
-        run: |
-          echo "NEXT_UMAMI_ID: $NEXT_UMAMI_ID"
-        env:
-          NEXT_UMAMI_ID: ${{ secrets.NEXT_UMAMI_ID }}
-      
-      # 7. Build the Next.js site
+
+      # 6. Build the Next.js site
       - run: yarn build
         env:
           EXPORT: 1
           UNOPTIMIZED: 1
           BASE_PATH: ${{ steps.configurepages.outputs.base_path }}
       
-      # 8. Upload build artifacts for deployment
+      # 7. Upload build artifacts for deployment
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -71,6 +63,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      # 9. Deploy the site using GitHub Pages action
+      # 8. Deploy the site using GitHub Pages action
       - uses: actions/deploy-pages@v4
         id: deployment
