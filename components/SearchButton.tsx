@@ -1,5 +1,5 @@
-import { AlgoliaButton } from 'pliny/search/AlgoliaButton'
-import { KBarButton } from 'pliny/search/KBarButton'
+import { AlgoliaButton } from '@eierina/pliny/search/AlgoliaButton'
+import { KBarButton } from '@eierina/pliny/search/KBarButton'
 import siteMetadata from '@/data/siteMetadata'
 
 const SearchButton = () => {

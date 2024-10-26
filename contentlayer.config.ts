@@ -13,7 +13,7 @@ import {
   remarkCodeTitles,
   remarkImgToJsx,
   extractTocHeadings,
-} from 'pliny/mdx-plugins/index.js'
+} from '@eierina/pliny/mdx-plugins/index.js'
 // Rehype packages
 import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
@@ -22,7 +22,7 @@ import rehypeCitation from 'rehype-citation'
 import rehypePrismPlus from 'rehype-prism-plus'
 import rehypePresetMinify from 'rehype-preset-minify'
 import siteMetadata from './data/siteMetadata'
-import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js'
+import { allCoreContent, sortPosts } from '@eierina/pliny/utils/contentlayer.js'
 
 const root = process.cwd()
 const isProduction = process.env.NODE_ENV === 'production'
