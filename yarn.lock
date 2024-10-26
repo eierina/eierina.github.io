@@ -1945,20 +1945,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@docsearch/css@npm:3.6.2":
-  version: 3.6.2
-  resolution: "@docsearch/css@npm:3.6.2"
-  checksum: 02630315b136d7555fad5059718a0519dfcab03217523e327a7e6c867d46648278c7d001dac94b2f9129455f4f8525db6d8dd34ba6796f0cb18b6024ca323e35
+"@docsearch/css@npm:3.6.1":
+  version: 3.6.1
+  resolution: "@docsearch/css@npm:3.6.1"
+  checksum: 313ca5a0394485d73b8be73ab2119913b68cf8f446e22a4b1a965123c34aba5a130f4dc5af7ec6880126a220d6040439bb95c11b163c4569f6e2ae18d89b4c3d
   languageName: node
   linkType: hard
 
 "@docsearch/react@npm:^3.5.0":
-  version: 3.6.2
-  resolution: "@docsearch/react@npm:3.6.2"
+  version: 3.6.1
+  resolution: "@docsearch/react@npm:3.6.1"
   dependencies:
     "@algolia/autocomplete-core": 1.9.3
     "@algolia/autocomplete-preset-algolia": 1.9.3
-    "@docsearch/css": 3.6.2
+    "@docsearch/css": 3.6.1
     algoliasearch: ^4.19.1
   peerDependencies:
     "@types/react": ">= 16.8.0 < 19.0.0"
@@ -1974,7 +1974,7 @@ __metadata:
       optional: true
     search-insights:
       optional: true
-  checksum: 402db9bb92b72f9ef0f1be257d5996ab8e8575801dd654afe3bcfef06e08d009ff1d2812c66acab89cb0d669d70047b6ba2d3d6af0bd019f43346e57db0f57d8
+  checksum: e3ad0a77932f99126933316b010a6bed30b9b3547a60269708482eea792856843c80df4b8476afb8a99e3b22a0bb37a6bd684992dccc3d277ad261a0bb27473a
   languageName: node
   linkType: hard
 
@@ -2018,31 +2018,6 @@ __metadata:
   version: 0.57.5
   resolution: "@effect-ts/system@npm:0.57.5"
   checksum: f24c304e076d82bcbf375c977fb678353bb7b37b22ba36e77f47db31532377e1d670391b03fb2c29b518ed91f4c996f34d45fab501921d7b11c05e6de69fa2ec
-  languageName: node
-  linkType: hard
-
-"@eierina/pliny@npm:0.2.1":
-  version: 0.2.1
-  resolution: "@eierina/pliny@npm:0.2.1"
-  dependencies:
-    "@docsearch/react": ^3.5.0
-    "@giscus/react": ^3.0.0
-    "@mailchimp/mailchimp_marketing": ^3.0.80
-    contentlayer2: ^0.4.6
-    copyfiles: ^2.4.1
-    github-slugger: ^2.0.0
-    js-yaml: 4.1.0
-    kbar: 0.1.0-beta.45
-    next-contentlayer2: ^0.4.6
-    next-themes: ^0.3.0
-    probe-image-size: ^7.2.3
-    remark: ^15.0.0
-    unist-util-visit: ^5.0.0
-  peerDependencies:
-    next: ">=13.0.0"
-    react: ^17.0.2 || ^18.0.0
-    react-dom: ^17.0.2 || ^18.0.0
-  checksum: 7f62a381555142823fa85e060443dd157fe9bbe617e985012f6cd1340a8dddd8d8c9a6e6f5d8ed55415fbb7916302a02c016cfd38796344e31506379920e7002
   languageName: node
   linkType: hard
 
@@ -3172,8 +3147,8 @@ __metadata:
   linkType: hard
 
 "@radix-ui/react-portal@npm:^1.0.1":
-  version: 1.1.2
-  resolution: "@radix-ui/react-portal@npm:1.1.2"
+  version: 1.1.1
+  resolution: "@radix-ui/react-portal@npm:1.1.1"
   dependencies:
     "@radix-ui/react-primitive": 2.0.0
     "@radix-ui/react-use-layout-effect": 1.1.0
@@ -3187,7 +3162,7 @@ __metadata:
       optional: true
     "@types/react-dom":
       optional: true
-  checksum: 2f737dc0445f02f512f814ba140227e1a049b3d215d79e22ead412c9befe830292c48a559a8ad1514a474ae8f0c4c43954dfbe294b93a0279d8747d08f7b7924
+  checksum: 84dab64ce9c9f4ed7d75df6d1d82877dc7976a98cc192287d39ba2ea512415ed7bf34caf02d579a18fe21766403fa9ae41d2482a14dee5514179ee1b09cc333c
   languageName: node
   linkType: hard
 
@@ -6221,14 +6196,13 @@ __metadata:
   linkType: hard
 
 "form-data@npm:^2.3.1":
-  version: 2.5.2
-  resolution: "form-data@npm:2.5.2"
+  version: 2.5.1
+  resolution: "form-data@npm:2.5.1"
   dependencies:
     asynckit: ^0.4.0
     combined-stream: ^1.0.6
     mime-types: ^2.1.12
-    safe-buffer: ^5.2.1
-  checksum: 89ed3d96238d6fa874d75435e20f1aad28a1c22a88ab4e726ac4f6b0d29bef33d7e5aca51248c1070eccbbf4df94020a53842e800b2f1fb63073881a268113b4
+  checksum: 5134ada56cc246b293a1ac7678dba6830000603a3979cf83ff7b2f21f2e3725202237cfb89e32bcb38a1d35727efbd3c3a22e65b42321e8ade8eec01ce755d08
   languageName: node
   linkType: hard
 
@@ -7824,33 +7798,33 @@ __metadata:
   linkType: hard
 
 "lit-element@npm:^4.1.0":
-  version: 4.1.1
-  resolution: "lit-element@npm:4.1.1"
+  version: 4.1.0
+  resolution: "lit-element@npm:4.1.0"
   dependencies:
     "@lit-labs/ssr-dom-shim": ^1.2.0
     "@lit/reactive-element": ^2.0.4
     lit-html: ^3.2.0
-  checksum: 74d0f2d6fb784b1e96f27c54d036b6eb49ca9883577db627ce9ca42b242c5a5da3ae7b5c874fe2a0559ee6134726a741ec2166a48bfee90ab91346a237f33e85
+  checksum: 16cc7e343fc7f872a0f6a468bb9d7f3697cd9c3c020fd66e1f29f81e15300dc8d091559a1fd2d4cb6f2eb99b76e3fbeea1991f74dd5ca77bfaadb5b6af3d85b3
   languageName: node
   linkType: hard
 
 "lit-html@npm:^3.2.0":
-  version: 3.2.1
-  resolution: "lit-html@npm:3.2.1"
+  version: 3.2.0
+  resolution: "lit-html@npm:3.2.0"
   dependencies:
     "@types/trusted-types": ^2.0.2
-  checksum: 1bacd9f8b2acfe44a989c09c21f1aedbe409409196eff8d203c952c7ad034899b16d239551efa76872a3cea21883db62a5309aeefc604a1e3d4a8d36c9719e63
+  checksum: fa566878efab2492f2dc359216bc5ccd5164466f6760984b9f9b7122c4932be19891ddf10a611bc88718e59c49f83f18e9b9e32fe193dcdc37df28f9fe05630c
   languageName: node
   linkType: hard
 
 "lit@npm:^3.1.2":
-  version: 3.2.1
-  resolution: "lit@npm:3.2.1"
+  version: 3.2.0
+  resolution: "lit@npm:3.2.0"
   dependencies:
     "@lit/reactive-element": ^2.0.4
     lit-element: ^4.1.0
     lit-html: ^3.2.0
-  checksum: ee22bbc53d5d639258b4a3a3d10f166adf959fd4ddb61db739d0a8328d0094a2232ffebb808fec3a645aeb166b15c03c688f75dde723524bf7b22263e078158f
+  checksum: b34e667481e1360f9d99a939e00238c1aff5ba9ffc43ebcb0e9f24db6c8226cf6f5c3e2b0e7c1a8de70e28e4697059c25742d0744377f0d5037b876b25266898
   languageName: node
   linkType: hard
 
@@ -9627,6 +9601,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pliny@npm:0.2.1":
+  version: 0.2.1
+  resolution: "pliny@npm:0.2.1"
+  dependencies:
+    "@docsearch/react": ^3.5.0
+    "@giscus/react": ^3.0.0
+    "@mailchimp/mailchimp_marketing": ^3.0.80
+    contentlayer2: ^0.4.6
+    copyfiles: ^2.4.1
+    github-slugger: ^2.0.0
+    js-yaml: 4.1.0
+    kbar: 0.1.0-beta.45
+    next-contentlayer2: ^0.4.6
+    next-themes: ^0.3.0
+    probe-image-size: ^7.2.3
+    remark: ^15.0.0
+    unist-util-visit: ^5.0.0
+  peerDependencies:
+    next: ">=13.0.0"
+    react: ^17.0.2 || ^18.0.0
+    react-dom: ^17.0.2 || ^18.0.0
+  checksum: a24182a068ec286be25eb6380ecc24e69834acbcf925d493c7a60293078792c5bba5e603a229b2e3388d9604910fe8139e8bead54208f5c7351b8e9b7ce87816
+  languageName: node
+  linkType: hard
+
 "possible-typed-array-names@npm:^1.0.0":
   version: 1.0.0
   resolution: "possible-typed-array-names@npm:1.0.0"
@@ -10773,13 +10772,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"safe-buffer@npm:^5.2.1":
-  version: 5.2.1
-  resolution: "safe-buffer@npm:5.2.1"
-  checksum: b99c4b41fdd67a6aaf280fcd05e9ffb0813654894223afb78a31f14a19ad220bba8aba1cb14eddce1fcfb037155fe6de4e861784eb434f7d11ed58d1e70dd491
-  languageName: node
-  linkType: hard
-
 "safe-buffer@npm:~5.1.0, safe-buffer@npm:~5.1.1":
   version: 5.1.2
   resolution: "safe-buffer@npm:5.1.2"
@@ -11387,7 +11379,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "tailwind-nextjs-starter-blog@workspace:."
   dependencies:
-    "@eierina/pliny": 0.2.1
     "@headlessui/react": 1.7.19
     "@next/bundle-analyzer": 14.2.3
     "@svgr/webpack": ^8.0.1
@@ -11415,6 +11406,7 @@ __metadata:
     next: 14.2.3
     next-contentlayer2: 0.5.1
     next-themes: ^0.3.0
+    pliny: 0.2.1
     postcss: ^8.4.24
     prettier: ^3.0.0
     prettier-plugin-tailwindcss: ^0.5.11

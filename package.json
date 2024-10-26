@@ -12,7 +12,6 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@eierina/pliny": "0.2.2",
     "@headlessui/react": "1.7.19",
     "@next/bundle-analyzer": "14.2.3",
     "@tailwindcss/forms": "^0.5.7",
@@ -28,6 +27,7 @@
     "next": "14.2.3",
     "next-contentlayer2": "0.5.1",
     "next-themes": "^0.3.0",
+    "pliny": "0.2.1",
     "postcss": "^8.4.24",
     "react": "18.3.1",
     "react-dom": "18.3.1",
