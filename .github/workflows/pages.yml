@@ -34,6 +34,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
       - run: yarn
+      - name: Set NEXT_UMAMI_SCRIPT_SRC with BASE_PATH
+        run: echo "NEXT_UMAMI_SCRIPT_SRC=${{ steps.configurepages.outputs.base_path }}${{ vars.NEXT_UMAMI_SCRIPT_SRC }}" >> $GITHUB_ENV
       - run: yarn build
         env:
           EXPORT: 1
@@ -46,7 +48,7 @@ jobs:
           MAILCHIMP_API_KEY: ${{ vars.MAILCHIMP_API_KEY }}
           MAILCHIMP_API_SERVER: ${{ vars.MAILCHIMP_API_SERVER }}
           MAILCHIMP_AUDIENCE_ID: ${{ vars.MAILCHIMP_AUDIENCE_ID }}
-          NEXT_UMAMI_SCRIPT_SRC: ${{ vars.NEXT_UMAMI_SCRIPT_SRC }}
+          NEXT_UMAMI_SCRIPT_SRC: ${{ env.NEXT_UMAMI_SCRIPT_SRC }}
           NEXT_UMAMI_ID: ${{ vars.NEXT_UMAMI_ID }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
