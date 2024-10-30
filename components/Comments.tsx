@@ -1,6 +1,6 @@
 'use client'
 
-import { Comments as CommentsComponent } from '@eierina/pliny/comments'
+import { Comments as CommentsComponent } from '@block0/pliny/comments'
 import { useState } from 'react'
 import siteMetadata from '@/data/siteMetadata'
 

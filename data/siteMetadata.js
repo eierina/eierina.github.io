@@ -1,4 +1,4 @@
-/** @type {import("pliny/config").PlinyConfig } */
+/** @type {import("@block0/pliny/config").PlinyConfig } */
 const siteMetadata = {
   title: 'Block::ZERO',
   author: 'Edoardo Ierina',
@@ -14,15 +14,13 @@ const siteMetadata = {
   //mastodon: 'https://mastodon.social/@mastodonuser',
   email: 'edoardo@block-zero.io',
   github: 'https://github.com/eierina',
-  x: 'https://twitter.com/eierina',
+  twitter: 'https://twitter.com/eierina',
   //facebook: 'https://facebook.com',
   //youtube: 'https://youtube.com',
   linkedin: 'https://www.linkedin.com/in/edoardoierina',
   //threads: 'https://www.threads.net',
   //instagram: 'https://www.instagram.com',
   locale: 'en-US',
-  // set to true if you want a navbar fixed to the top
-  stickyNav: false,
   analytics: {
     // If you want to use an analytics provider you have to add it to the
     // content security policy in the `next.config.js` file.
@@ -34,8 +32,6 @@ const siteMetadata = {
     },
     // plausibleAnalytics: {
     //   plausibleDataDomain: '', // e.g. tailwind-nextjs-starter-blog.vercel.app
-    // If you are hosting your own Plausible.
-    //   src: '', // e.g. https://plausible.my-domain.com/js/script.js
     // },
     // simpleAnalytics: {},
     // posthogAnalytics: {
@@ -46,7 +42,7 @@ const siteMetadata = {
     // },
   },
   newsletter: {
-    // supports mailchimp, buttondown, convertkit, klaviyo, revue, emailoctopus, beehive
+    // supports mailchimp, buttondown, convertkit, klaviyo, revue, emailoctopus
     // Please add your .env file and modify it according to your selection
     provider: 'mailchimp',
   },
@@ -83,7 +79,7 @@ const siteMetadata = {
   search: {
     provider: 'kbar', // kbar or algolia
     kbarConfig: {
-      searchDocumentsPath: `${process.env.BASE_PATH || ''}/search.json`, // path to load documents to search
+      searchDocumentsPath: 'search.json', // path to load documents to search
     },
     // provider: 'algolia',
     // algoliaConfig: {

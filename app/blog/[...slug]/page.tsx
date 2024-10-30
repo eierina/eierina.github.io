@@ -3,8 +3,8 @@ import 'katex/dist/katex.css'
 
 import PageTitle from '@/components/PageTitle'
 import { components } from '@/components/MDXComponents'
-import { MDXLayoutRenderer } from '@eierina/pliny/mdx-components'
-import { sortPosts, coreContent, allCoreContent } from '@eierina/pliny/utils/contentlayer'
+import { MDXLayoutRenderer } from '@block0/pliny/mdx-components'
+import { sortPosts, coreContent, allCoreContent } from '@block0/pliny/utils/contentlayer'
 import { allBlogs, allAuthors } from 'contentlayer/generated'
 import type { Authors, Blog } from 'contentlayer/generated'
 import PostSimple from '@/layouts/PostSimple'
@@ -75,7 +75,9 @@ export async function generateMetadata({
 }
 
 export const generateStaticParams = async () => {
-  return allBlogs.map((p) => ({ slug: p.slug.split('/').map((name) => decodeURI(name)) }))
+  const paths = allBlogs.map((p) => ({ slug: p.slug.split('/') }))
+
+  return paths
 }
 
 export default async function Page({ params }: { params: { slug: string[] } }) {

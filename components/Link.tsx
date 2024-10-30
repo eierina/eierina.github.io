@@ -8,16 +8,14 @@ const CustomLink = ({ href, ...rest }: LinkProps & AnchorHTMLAttributes<HTMLAnch
   const isAnchorLink = href && href.startsWith('#')
 
   if (isInternalLink) {
-    return <Link className="break-words" href={href} {...rest} />
+    return <Link href={href} {...rest} />
   }
 
   if (isAnchorLink) {
-    return <a className="break-words" href={href} {...rest} />
+    return <a href={href} {...rest} />
   }
 
-  return (
-    <a className="break-words" target="_blank" rel="noopener noreferrer" href={href} {...rest} />
-  )
+  return <a target="_blank" rel="noopener noreferrer" href={href} {...rest} />
 }
 
 export default CustomLink

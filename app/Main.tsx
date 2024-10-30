@@ -1,8 +1,8 @@
 import Link from '@/components/Link'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
-import { formatDate } from '@eierina/pliny/utils/formatDate'
-import NewsletterForm from '@eierina/pliny/ui/NewsletterForm'
+import { formatDate } from '@block0/pliny/utils/formatDate'
+import NewsletterForm from '@block0/pliny/ui/NewsletterForm'
 
 const MAX_DISPLAY = 5
 
@@ -11,9 +11,6 @@ export default function Home({ posts }) {
     <>
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <div className="space-y-2 pb-8 pt-6 md:space-y-5">
-          {/* <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
-            Latest
-          </h1> */}
           <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
             {siteMetadata.description}
           </p>
@@ -23,43 +20,51 @@ export default function Home({ posts }) {
           {posts.slice(0, MAX_DISPLAY).map((post) => {
             const { slug, date, title, summary, tags, readingTime } = post
             return (
-              <li key={slug} className="py-12">
-                <Link href={`/blog/${slug}`} className="block">
-                  <article>
-                    <div className="space-y-2 xl:grid xl:grid-cols-4 xl:items-baseline xl:space-y-0">
-                      <div className="space-y-5 xl:col-span-3">
-                        <div className="space-y-6">
-                          <div>
-                            <h2 className="text-2xl font-bold leading-8 tracking-tight">{title}</h2>
-                          </div>
-                          <div className="prose max-w-none text-gray-500 dark:text-gray-400">
-                            {summary}
-                          </div>
+              <Link key={slug} href={`/blog/${slug}`} className="block py-8">
+                <article>
+                  <div className="space-y-2 xl:grid xl:grid-cols-4 xl:items-baseline xl:space-y-0">
+                    <dl>
+                      <dt className="sr-only"></dt>
+                      <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
+                        {/* TODO: add post image here */}
+                      </dd>
+                    </dl>
+                    <div className="space-y-5 xl:col-span-3">
+                      <div className="space-y-6">
+                        <div>
+                          <h2 className="text-2xl font-bold leading-8 tracking-tight">
+                            <Link href={`/blog/${slug}`} className="text-gray-900 dark:text-gray-100">
+                              {title}
+                            </Link>
+                          </h2>
                         </div>
-                        <dl className="flex items-center gap-2.5 text-gray-500 dark:text-gray-400">
-                          <dt className="sr-only">Published on</dt>
-                          <dd className="text-base text-sm font-medium leading-6 text-gray-500 dark:text-gray-400">
-                            <time dateTime={date}>{formatDate(date, siteMetadata.locale)}</time>
-                          </dd>
-                          <div className="dark:bg-gray-6500 h-4 w-px bg-gray-300 opacity-30"></div>{' '}
-                          {/* Separator */}
-                          <dt className="sr-only">Estimated reading time</dt>
-                          <dd className="text-base text-sm font-medium leading-6 text-gray-500 dark:text-gray-400">
-                            {readingTime.text}
-                          </dd>
-                        </dl>
-                        <div className="text-base font-medium leading-6">
-                          <div className="flex flex-wrap">
-                            {tags.map((tag) => (
-                              <Tag key={tag} text={tag} />
-                            ))}
-                          </div>
+                        <div className="prose max-w-none text-gray-500 dark:text-gray-400">
+                          {summary}
+                        </div>
+                      </div>
+                      <dl className="flex items-center gap-2.5 text-gray-500 dark:text-gray-400">
+                        <dt className="sr-only">Published on</dt>
+                        <dd className="text-base text-sm font-medium leading-6 text-gray-500 dark:text-gray-400">
+                          <time dateTime={date}>{formatDate(date, siteMetadata.locale)}</time>
+                        </dd>
+                        <div className="dark:bg-gray-6500 h-4 w-px bg-gray-300 opacity-30"></div>{' '}
+                        {/* Separator */}
+                        <dt className="sr-only">Estimated reading time</dt>
+                        <dd className="text-base text-sm font-medium leading-6 text-gray-500 dark:text-gray-400">
+                          {readingTime.text}
+                        </dd>
+                      </dl>
+                      <div className="text-base font-medium leading-6">
+                        <div className="flex flex-wrap">
+                          {tags.map((tag) => (
+                            <Tag key={tag} text={tag} />
+                          ))}
                         </div>
                       </div>
                     </div>
-                  </article>
-                </Link>
-              </li>
+                  </div>
+                </article>
+              </Link>
             )
           })}
         </ul>

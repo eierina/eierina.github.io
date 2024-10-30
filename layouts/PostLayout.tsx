@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { CoreContent } from '@eierina/pliny/utils/contentlayer'
+import { CoreContent } from '@block0/pliny/utils/contentlayer'
 import type { Blog, Authors } from 'contentlayer/generated'
 import Comments from '@/components/Comments'
 import Link from '@/components/Link'
