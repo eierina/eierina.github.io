@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { formatDate } from '@block0/pliny/utils/formatDate'
-import { CoreContent } from '@block0/pliny/utils/contentlayer'
+import { formatDate } from '@block-z3r0/pliny/utils/formatDate'
+import { CoreContent } from '@block-z3r0/pliny/utils/contentlayer'
 import type { Blog } from 'contentlayer/generated'
 import Link from '@/components/Link'
 import Tag from '@/components/Tag'
@@ -98,18 +98,18 @@ export default function ListLayout({
                     </dd>
                   </dl>
                   <div className="space-y-5 xl:col-span-3">
-                  <div className="space-y-6">
-                    <div>
-                      <h2 className="text-2xl font-bold leading-8 tracking-tight">
-                        <Link href={`/${slug}`} className="text-gray-900 dark:text-gray-100">
-                          {title}
-                        </Link>
-                      </h2>
+                    <div className="space-y-6">
+                      <div>
+                        <h2 className="text-2xl font-bold leading-8 tracking-tight">
+                          <Link href={`/${slug}`} className="text-gray-900 dark:text-gray-100">
+                            {title}
+                          </Link>
+                        </h2>
+                      </div>
+                      <div className="prose max-w-none text-gray-500 dark:text-gray-400">
+                        {summary}
+                      </div>
                     </div>
-                    <div className="prose max-w-none text-gray-500 dark:text-gray-400">
-                      {summary}
-                    </div>
-                  </div>
                     <dl className="flex items-center gap-2.5 text-gray-500 dark:text-gray-400">
                       <dt className="sr-only">Published on</dt>
                       <dd className="text-base text-sm font-medium leading-6 text-gray-500 dark:text-gray-400">

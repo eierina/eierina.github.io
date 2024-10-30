@@ -1,4 +1,4 @@
-/** @type {import("@block0/pliny/config").PlinyConfig } */
+/** @type {import("@block-z3r0/pliny/config").PlinyConfig } */
 const siteMetadata = {
   title: 'Block::ZERO',
   author: 'Edoardo Ierina',

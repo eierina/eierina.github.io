@@ -1667,9 +1667,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@block0/pliny@file:/Users/edoardoierina/Projects/npm/pliny/packages/pliny::locator=tailwind-nextjs-starter-blog%40workspace%3A.":
+"@block-z3r0/pliny@npm:0.2.0":
   version: 0.2.0
-  resolution: "@block0/pliny@file:/Users/edoardoierina/Projects/npm/pliny/packages/pliny#/Users/edoardoierina/Projects/npm/pliny/packages/pliny::hash=3e8e54&locator=tailwind-nextjs-starter-blog%40workspace%3A."
+  resolution: "@block-z3r0/pliny@npm:0.2.0"
   dependencies:
     "@docsearch/react": ^3.5.0
     "@giscus/react": ^3.0.0
@@ -1688,7 +1688,7 @@ __metadata:
     next: ">=13.0.0"
     react: ^17.0.2 || ^18.0.0
     react-dom: ^17.0.2 || ^18.0.0
-  checksum: 8ae80aa8fd41b5294ce84d72c1ab5569e58d0f1380c16e1f9fba73333e651864f474a612214ed7e59420b409820ea1249cb5805c5c0e198a097fa0060540ac37
+  checksum: ccf77251784c78dce3493a4188039ce93c13d732be5beb866163deda2afa45d4551a3ebad285528325a2a132cd4ba33b3d0d6e959d870681f668cb5b4522c204
   languageName: node
   linkType: hard
 
@@ -10861,7 +10861,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "tailwind-nextjs-starter-blog@workspace:."
   dependencies:
-    "@block0/pliny": "file:/Users/edoardoierina/Projects/npm/pliny/packages/pliny"
+    "@block-z3r0/pliny": 0.2.0
     "@headlessui/react": 1.7.19
     "@next/bundle-analyzer": 14.2.1
     "@svgr/webpack": ^8.0.1

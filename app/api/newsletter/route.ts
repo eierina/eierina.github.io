@@ -1,4 +1,4 @@
-import { NewsletterAPI } from '@block0/pliny/newsletter'
+import { NewsletterAPI } from '@block-z3r0/pliny/newsletter'
 import siteMetadata from '@/data/siteMetadata'
 
 const handler = NewsletterAPI({
