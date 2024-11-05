@@ -1,0 +1,50 @@
+---
+const giscusRepo = import.meta.env.GISCUS_REPO;
+const giscusRepoId = import.meta.env.GISCUS_REPO_ID;
+const giscusCategory = import.meta.env.GISCUS_CATEGORY;
+const giscusCategoryId = import.meta.env.GISCUS_CATEGORY_ID;
+const commentsEnabled = !!(giscusRepo && giscusRepoId && giscusCategory && giscusCategoryId)
+
+---
+{commentsEnabled && (
+    <>
+        <section class="mx-auto mt-6">
+            <script
+                is:inline
+                src="https://giscus.app/client.js"
+                data-repo={giscusRepo}
+                data-repo-id={giscusRepoId}
+                data-category={giscusCategory}
+                data-category-id={giscusCategoryId}
+                data-mapping="pathname"
+                data-strict="1"
+                data-reactions-enabled="1"
+                data-emit-metadata="0"
+                data-input-position="top"
+                data-theme="dark_high_contrast"
+                data-lang="en"
+                data-loading="lazy"
+                crossorigin="anonymous"
+                async>
+            </script>
+        </section>
+
+        <script is:inline>
+            function updateGiscusTheme() {
+                const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+                
+                const iframe = document.querySelector('iframe.giscus-frame');
+                if (!iframe) return;
+                
+                iframe.contentWindow.postMessage({ giscus: { setConfig: { theme } } }, 'https://giscus.app');
+            }
+
+            if (typeof observer === 'undefined') {
+                const observer = new MutationObserver(updateGiscusTheme);
+                observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+            }
+
+            window.onload = updateGiscusTheme;
+        </script>
+    </>
+)}

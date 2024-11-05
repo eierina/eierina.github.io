@@ -19,41 +19,46 @@ jobs:
     runs-on: ubuntu-latest
     environment: github-pages
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: yarn
-      - id: configurepages
+
+      - name: Configure GitHub Pages
+        id: configure-pages
         uses: actions/configure-pages@v5
+
       - name: Restore cache
         uses: actions/cache@v4
         with:
-          path: .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          path: .astro/cache
+          key: ${{ runner.os }}-astro-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**/*.{js,ts,jsx,tsx}') }}
           restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
-      - run: yarn
-      - name: Set NEXT_UMAMI_SCRIPT_SRC with BASE_PATH
-        run: echo "NEXT_UMAMI_SCRIPT_SRC=${{ steps.configurepages.outputs.base_path }}${{ vars.NEXT_UMAMI_SCRIPT_SRC }}" >> $GITHUB_ENV
-      - run: yarn build
+            ${{ runner.os }}-astro-${{ hashFiles('**/yarn.lock') }}-
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build Astro site
+        run: yarn astro build
         env:
-          EXPORT: 1
-          UNOPTIMIZED: 1
-          BASE_PATH: ${{ steps.configurepages.outputs.base_path }}
-          NEXT_PUBLIC_GISCUS_REPO: ${{ vars.NEXT_PUBLIC_GISCUS_REPO }}
-          NEXT_PUBLIC_GISCUS_REPOSITORY_ID: ${{ vars.NEXT_PUBLIC_GISCUS_REPOSITORY_ID }}
-          NEXT_PUBLIC_GISCUS_CATEGORY: ${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY }}
-          NEXT_PUBLIC_GISCUS_CATEGORY_ID: ${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY_ID }}
-          MAILCHIMP_API_KEY: ${{ vars.MAILCHIMP_API_KEY }}
-          MAILCHIMP_API_SERVER: ${{ vars.MAILCHIMP_API_SERVER }}
-          MAILCHIMP_AUDIENCE_ID: ${{ vars.MAILCHIMP_AUDIENCE_ID }}
-          NEXT_UMAMI_SCRIPT_SRC: ${{ env.NEXT_UMAMI_SCRIPT_SRC }}
-          NEXT_UMAMI_ID: ${{ vars.NEXT_UMAMI_ID }}
+          BASE_PATH: ${{ steps.configure-pages.outputs.base_path }}
+          GISCUS_REPO: ${{ vars.NEXT_PUBLIC_GISCUS_REPO }}
+          GISCUS_REPO_ID: ${{ vars.NEXT_PUBLIC_GISCUS_REPOSITORY_ID }}
+          GISCUS_CATEGORY: ${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY }}
+          GISCUS_CATEGORY_ID: ${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY_ID }}
+          UMAMI_SCRIPT_SRC: ${{ env.NEXT_UMAMI_SCRIPT_SRC }}
+          UMAMI_WEBSITE_ID: ${{ vars.NEXT_UMAMI_ID }}
+          UMAMI_HOST_URL: ${{ vars.NEXT_UMAMI_URL}}
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./out
+          path: ./dist
 
   deploy:
     needs: build
@@ -62,5 +67,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/deploy-pages@v4
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
         id: deployment

@@ -1,0 +1,37 @@
+---
+import { SOCIALS } from "@config";
+import LinkButton from "./LinkButton.astro";
+import type { SocialObjects } from "../types";
+import socialIcons from "@assets/socialIcons";
+
+export interface Props {
+  centered?: boolean;
+  socials?: SocialObjects;
+}
+
+const { centered = false, socials = SOCIALS } = Astro.props;
+---
+
+<address class={`social-icons contact-info ${centered ? "flex" : ""}`} itemprop="contactPoint" itemscope itemtype="https://schema.org/ContactPoint">
+  {
+    socials.filter(social => social.active).map(social => (
+      <LinkButton
+        href={social.href}
+        className="link-button"
+        title={social.linkTitle}
+      >
+        <Fragment set:html={socialIcons[social.name]} />
+        <span class="sr-only">{social.linkTitle}</span>
+      </LinkButton>
+    ))
+  }
+</address>
+
+<style>
+  .social-icons {
+    @apply flex-wrap justify-center gap-1;
+  }
+  .link-button {
+    @apply p-2 hover:rotate-6 sm:p-1;
+  }
+</style>
