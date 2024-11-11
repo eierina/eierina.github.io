@@ -1,15 +1,14 @@
 ---
 author: Edoaro Ierina
-pubDatetime: 2024-10-28T15:20:35Z
-title: Alloy in Action - Connect, Deploy, Interact, Decode
+pubDatetime: 2024-11-05T10:30:00Z
+title: Alloy in Action - Part 2: Advanced Transaction Composition and Gas Management
 featured: false
 draft: false
 tags:
   - Alloy
   - EVM
   - Rust
-description:
-  Discover how to use Alloy, a powerful Rust library, for blockchain development in the first installment of the Alloy in Action series. This blog post guides you through setting up the development environment with Rust, Foundry, and Solidity, and walks you through creating both Rust and Solidity projects. Learn to deploy smart contracts using Alloy's sol! macro, interact with contracts, handle transactions and receipts, decode events, manage Ether transfers, and implement comprehensive error handling. Stay tuned for upcoming posts that will explore advanced topics such as nonce management, gas estimation, and more.
+description: Continue your blockchain development journey with the second installment of the Alloy in Action series. This blog post delves into advanced transaction composition and gas management using Alloy's powerful Rust features. Learn how to build transactions with TransactionRequest, manually encode transaction data using ABI, and fine-tune gas parameters for optimal performance. Explore nonce management, base fee calculation based on EIP-1559, gas estimation, and transaction confirmation strategies. Enhance your ability to interact with smart contracts by handling complex transactions and efficiently managing gas fees.
 ---
 
 Welcome to the first post in the "Alloy in Action" series! Today, we'll explore how to use [Alloy](https://github.com/alloy-rs/alloy) - a powerful Rust library for blockchain development. This series aims to introduce you to the basics of connecting Rust applications to the blockchain, deploying and interacting with smart contracts, and decoding events and errors.
