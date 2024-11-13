@@ -1,7 +1,7 @@
 ---
 author: Edoardo Ierina
 pubDatetime: 2024-11-04T15:20:35Z
-title: Alloy in Action - Advanced Transaction Composition and Gas Management in Rust
+title: Alloy in Action (Part 2) - Advanced Transaction Composition and Gas Management
 featured: false
 draft: false
 tags:
@@ -570,12 +570,56 @@ println!("🔍 Current value from contract: {}", current_value);
 
 In this case, we can decode the returned ABI-encoded result using the code generated for the `SampleContract`.
 
+## Running the Example
+
+To successfully run the example, ensure that **Anvil** is operating locally with the `block time` option set to `3`. This configuration simulates the time interval between block generations, allowing you to observe transaction confirmations in a controlled environment.
+
+### Steps to Run the Example
+
+1. **Start Anvil Locally:**
+   
+   Begin by launching Anvil with the specified block time. Open your terminal and execute the following command:
+
+   ```shell
+   anvil --block-time 3
+   ```
+
+   This command initializes Anvil with a block time of 3 seconds, meaning a new block is mined every 3 seconds.
+
+2. **Execute Your Code:**
+   
+   With Anvil running, execute the code we wrote so far. 
+   
+     ```shell
+     cargo run
+     ```
+
+3. **Observe the Output:**
+   
+   As the code runs, you should see output similar to the example below. This output provides real-time feedback on the status of each transaction and the state of the contract.
+
+### Example Output
+
+```shell
+🔄 Transaction sent (0xc610b765f0632d08269330ce0e0fd1585a0697eb706450aa065cdac2e4730a86).
+✅ Transaction confirmed (0xc610b765f0632d08269330ce0e0fd1585a0697eb706450aa065cdac2e4730a86).
+🧾 Deploy transaction receipt obtained (0xc610b765f0632d08269330ce0e0fd1585a0697eb706450aa065cdac2e4730a86).
+📍 Contract deployed at address (0x5fbdb2315678afecb367f032d93f642f64180aa3).
+🔄 setValue transaction sent (0xbf9c3cd42e3c1b2c5313dc728e4fe401c74a743ca3535dbf9dd4c1ad5873bd49).
+✅ setValue transaction confirmed (0xbf9c3cd42e3c1b2c5313dc728e4fe401c74a743ca3535dbf9dd4c1ad5873bd49).
+🧾 setValue transaction receipt obtained (0xbf9c3cd42e3c1b2c5313dc728e4fe401c74a743ca3535dbf9dd4c1ad5873bd49).
+🔍 Current value from contract: 2
+```
+
+> **Timing Note:** Notice that after a transaction is sent, there is an approximate delay of **6 to 9 seconds** before the transaction is confirmed. This delay is influenced by the product of `block time` setting in Anvil, which controls how frequently new blocks are mined and the `confirmations` variable we set in the code.
+
 ## Conclusion
 In this tutorial, we've:
 
-Manually composed Ethereum transactions using Alloy in Rust, giving us full control over transaction parameters.
-Calculated gas fees according to EIP-1559 specifications, including the base fee and priority tip.
-Managed transaction nonces to ensure proper transaction sequencing and uniqueness.
-Deployed a smart contract by constructing the deployment transaction with ABI-encoded constructor parameters.
-Interacted with the deployed contract by crafting transactions for function calls and decoding the contract's responses.
-By mastering these advanced techniques, you gain a deeper understanding of Ethereum's transaction mechanics and enhance your ability to create optimized and efficient blockchain applications.
+- Manually Composed Transactions: Utilized TransactionRequest to build transactions without high-level abstractions.
+- Encoded Transaction Data: Employed ABI encoding to prepare constructor and function calls for the smart contract.
+- Managed Gas Parameters: Calculated base_fee and tip according to EIP-1559 specifications to optimize transaction costs.
+- Handled Nonces Effectively: Ensured transaction uniqueness and prevented reuse by accurately managing nonces, including pending transactions.
+- Deployed and Interacted with Contracts: Successfully deployed the SampleContract and performed interactions such as setting and retrieving values.
+- Implemented Confirmation Strategies: Applied a confirmation strategy to wait for a specified number of block confirmations, enhancing transaction reliability.
+These steps deepen your understanding of transaction mechanics and gas management on the Ethereum blockchain using Rust and Alloy, setting the stage for more complex blockchain interactions in the upcoming REVM series.
