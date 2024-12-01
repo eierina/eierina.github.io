@@ -14,7 +14,7 @@ description:
 
 Welcome to the first post in the "Alloy in Action" series! Today, we'll explore how to use [Alloy](https://github.com/alloy-rs/alloy) - a powerful Rust library for blockchain development. This series aims to introduce you to the basics of connecting Rust applications to the blockchain, deploying and interacting with smart contracts, and decoding events and errors.
 
-**Note:** The full code for this tutorial is available on GitHub: [eierina/alloy-in-action](https://github.com/eierina/alloy-in-action).
+**Note:** The full code for this tutorial is available on GitHub: [eierina/alloy-in-action/01-deploy-interact-decode](https://github.com/eierina/alloy-in-action/tree/main/01-deploy-interact-decode).
 
 This tutorial assumes a basic understanding of Solidity and Rust. If you're new to Rust, consider this an opportunity to learn by doing, as we'll introduce concepts incrementally and with increasing complexity.
 ## Setting Up the Environment
@@ -74,45 +74,68 @@ forge install
 Create a `SampleContract.sol` file in the `src` folder of the Solidity root folder with the following content:
 
 ```solidity
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
 contract SampleContract {
+    // State variable to store a single unsigned integer value
     uint256 public value;
 
-    event ValueChanged(uint256 newValue);
-    event EtherReceived(address sender, uint256 amount);
+    // Event to be emitted when the 'value' state variable is updated
+    event ValueChanged(address indexed updater, uint256 indexed oldValue, uint256 newValue);
 
+    // Event to be emitted when Ether is received via the deposit function
+    event EtherReceived(address indexed sender, uint256 amount, uint256 newBalance);    
+
+    // Event to be emitted when Ether is withdrawn via the withdraw function
+    event EtherWithdrawn(address indexed recipient, uint256 amount, uint256 remainingBalance);
+
+    // Custom error used to demonstrate Solidity's revert mechanism
     error SampleError(string cause);
 
+    /// @notice Constructor to set the initial value of the contract
+    /// @param _initialValue The initial value assigned to 'value'
     constructor(uint256 _initialValue) {
         value = _initialValue;
     }
 
+    /// @notice Sets a new value for the 'value' state variable
+    /// @param _value The new value to be set
     function setValue(uint256 _value) external {
+        uint256 oldValue = value;
         value = _value;
-        emit ValueChanged(_value);
-    }
+        emit ValueChanged(msg.sender, oldValue, _value);
+    }    
 
+    /// @notice Retrieves the current value of the 'value' state variable
+    /// @return currentValue The current value stored in 'value'
     function getValue() external view returns (uint256 currentValue) {
         currentValue = value;
     }
 
+    /// @notice Accepts Ether deposits and logs the sender and amount
     function deposit() external payable {
-        emit EtherReceived(msg.sender, msg.value);
+        emit EtherReceived(msg.sender, msg.value, address(this).balance);
     }
 
+    /// @notice Withdraws the entire balance of the contract to the caller
     function withdraw() external {
-        payable(msg.sender).transfer(address(this).balance);
+        uint256 balance = address(this).balance;
+        payable(msg.sender).transfer(balance);
+        emit EtherWithdrawn(msg.sender, balance, 0);
     }
 
+    /// @notice Retrieves the contract's current Ether balance
+    /// @return balance The current balance of the contract in wei
     function getBalance() external view returns (uint256 balance) {
         balance = address(this).balance;
     }
 
+    /// @notice Reverts the transaction with a custom error message
+    /// @dev Used to demonstrate custom error handling in Solidity
     function revertWithError() external pure {
         revert SampleError("hello from revert!");
-    }
+    }    
 }
 ```
 
@@ -145,21 +168,39 @@ use crate::SampleContract::SampleContractEvents;
 sol! {    
     #[sol(rpc, bytecode = "<BYTECODE>")]
     contract SampleContract {
-        uint256 public value;
+        // Events
+        event ValueChanged(address indexed updater, uint256 indexed oldValue, uint256 newValue);
+        event EtherReceived(address indexed sender, uint256 amount, uint256 newBalance);
+        event EtherWithdrawn(address indexed recipient, uint256 amount, uint256 remainingBalance);
 
-        event ValueChanged(uint256 newValue);
-        event EtherReceived(address sender, uint256 amount);
+        // Errors
+        error SampleError(string cause);
 
-        error SampleError(string message);
-
+        // Constructor
         constructor(uint256 _initialValue);
 
+        // Functions
+        /// @notice Sets a new value for the 'value' state variable
+        /// @param _value The new value to be set
         function setValue(uint256 _value) external;
+
+        /// @notice Retrieves the current value of the 'value' state variable
+        /// @return currentValue The current value stored in 'value'
         function getValue() external view returns (uint256 currentValue);
+
+        /// @notice Accepts Ether deposits and logs the sender and amount
         function deposit() external payable;
+
+        /// @notice Withdraws the entire balance of the contract to the caller
         function withdraw() external;
+
+        /// @notice Retrieves the contract's current Ether balance
+        /// @return balance The current balance of the contract in wei
         function getBalance() external view returns (uint256 balance);
-        function revertWithError() external;
+
+        /// @notice Reverts the transaction with a custom error message
+        /// @dev Used to demonstrate custom error handling in Solidity
+        function revertWithError() external pure;
     }
 }
 
@@ -175,7 +216,7 @@ solc src/SampleContract.sol --bin --via-ir --optimize --optimize-runs 1
 
 ======= src/SampleContract.sol:SampleContract =======
 Binary:
-608034604d57601f61024238819003918201601f19168301916001600160401b03831184841017605157808492602094604052833981010312604d57515f556040516101dc90816100668239f35b5f80fd5b634e487b7160e01b5f52604160045260245ffdfe6080806040526004361015610012575f80fd5b5f3560e01c90816312065fe01461018e5750806320965255146101375780633ccfd60b146101535780633fa4f2451461013757806355241077146100f457806357eca1a5146100a95763d0e30db014610069575f80fd5b5f3660031901126100a5577f1e57e3bb474320be3d2c77138f75b7c3941292d647f5f9634e33a8e94e0e069b60408051338152346020820152a1005b5f80fd5b346100a5575f3660031901126100a5576040516335fdd7ab60e21b815260206004820152601260248201527168656c6c6f2066726f6d207265766572742160701b6044820152606490fd5b346100a55760203660031901126100a5577f93fe6d397c74fdf1402a8b72e47b68512f0510d7b98a4bc4cbdf6ac7108b3c596020600435805f55604051908152a1005b346100a5575f3660031901126100a55760205f54604051908152f35b346100a5575f3660031901126100a5575f80808047818115610185575b3390f11561017a57005b6040513d5f823e3d90fd5b506108fc610170565b346100a5575f3660031901126100a557602090478152f3fea26469706673582212206f147fef9942d5bc4d46bb70de766fa699b9f8ee6dbc970d61eec1572c1a1e7c64736f6c634300081b0033
+608034604d57601f61028038819003918201601f19168301916001600160401b03831184841017605157808492602094604052833981010312604d57515f5560405161021a90816100668239f35b5f80fd5b634e487b7160e01b5f52604160045260245ffdfe6080806040526004361015610012575f80fd5b5f3560e01c90816312065fe0146101cc5750806320965255146101405780633ccfd60b1461015c5780633fa4f2451461014057806355241077146100f857806357eca1a5146100ad5763d0e30db014610069575f80fd5b5f3660031901126100a957476040519034825260208201527f1d57945c1033a96907a78f6e0ebf6a03815725dac25f33cc806558670344ac8860403392a2005b5f80fd5b346100a9575f3660031901126100a9576040516335fdd7ab60e21b815260206004820152601260248201527168656c6c6f2066726f6d207265766572742160701b6044820152606490fd5b346100a95760203660031901126100a9576004355f5490805f556040519081527fe435f0fbe584e62b62f48f4016a57ef6c95e4c79f5babbe6ad3bb64f3281d26160203392a3005b346100a9575f3660031901126100a95760205f54604051908152f35b346100a9575f3660031901126100a95747805f81156101c3575b5f80809381933390f1156101b8576040519081525f60208201527fd5ca65e1ec4f4864fea7b9c5cb1ec3087a0dbf9c74641db3f6458edf445c405160403392a2005b6040513d5f823e3d90fd5b506108fc610176565b346100a9575f3660031901126100a957602090478152f3fea2646970667358221220cae439afc02e7259cc99c579d322222052f82f79b377ffd437d0523157cb795f64736f6c634300081b0033
 ```
 
 ## Async Execution and Logging
@@ -343,7 +384,13 @@ for log in receipt.inner.logs() {
         // Check if the decoded event is of the `ValueChanged` variant
         if let SampleContractEvents::ValueChanged(event) = log.data {
             // Handle the `ValueChanged` event by printing the new value
-            println!("⚡️ Event: ValueChanged - newValue: {}", event.newValue);
+            println!(
+                "⚡️ Event: ValueChanged - \
+                updater: {}, \
+                oldValue: {}, \
+                newValue: {}",
+                event.updater, event.oldValue, event.newValue
+            );
         }
     }
 }
@@ -377,7 +424,13 @@ for log in receipt.inner.logs() {
         // Check if the decoded event is of the `EtherReceived` variant
         if let SampleContractEvents::EtherReceived(event) = log.data {
             // Handle the `EtherReceived` event by printing the sender and amount
-            println!("⚡️ Event: EtherReceived - sender: {}; amount: {}", event.sender, event.amount);
+            println!(
+                "⚡️ Event: EtherReceived - \
+                sender: {}; \
+                amount: {} Ξ, \
+                newBalance: {} Ξ",
+                event.sender, format_ether(event.amount), format_ether(event.newBalance)
+            );
         }
     }
 }
@@ -430,17 +483,17 @@ With Anvil running locally, you should see output like this:
 ```shell
 📦 Contract deployed with initial value: 1
 🔍 Initial value retrieved from contract: 1
-🔄 Transaction sent to set new value. Transaction hash: 0x960246006b2aaa522a0aa18a4b8e4beb121f72b468539c1dae0d313981fb3092
-🧾 Transaction receipt obtained. Receipt hash: 0x960246006b2aaa522a0aa18a4b8e4beb121f72b468539c1dae0d313981fb3092
-⚡️ Event: ValueChanged - newValue: 2
+🔄 Transaction sent to set new value. Transaction hash: 0x2b9133f299ae7ecf61fd29d7972186a9cf4fbdcf44026e9870c1f63342140a58
+🧾 Transaction receipt obtained. Receipt hash: 0x2b9133f299ae7ecf61fd29d7972186a9cf4fbdcf44026e9870c1f63342140a58
+⚡️ Event: ValueChanged - updater: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266, oldValue: 1, newValue: 2
 🔍 Updated value retrieved from contract: 2
 🔍 Initial contract balance: 0.000000000000000000 Ξ
-🔍 Initial signer balance: 9999.999796153102730967 Ξ
-🔄 Transaction sent to deposit Ether. Transaction hash: 0xe70300461471dc3cc8964187a82e541af632f85a5eea59099f62598b737f38e3
-🧾 Transaction receipt obtained. Receipt hash: 0xe70300461471dc3cc8964187a82e541af632f85a5eea59099f62598b737f38e3
-⚡️ Event: EtherReceived - sender: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266; amount: 1000000000000000
+🔍 Initial signer balance: 9999.999782077810858145 Ξ
+🔄 Transaction sent to deposit Ether. Transaction hash: 0x52594caf0e64a3d48619f1bf234219816ead6a637ae6f7225912d59e96837f8c
+🧾 Transaction receipt obtained. Receipt hash: 0x52594caf0e64a3d48619f1bf234219816ead6a637ae6f7225912d59e96837f8c
+⚡️ Event: EtherReceived - sender: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266; amount: 0.001000000000000000 Ξ, newBalance: 0.001000000000000000 Ξ
 🔍 Contract balance after deposit: 0.001000000000000000 Ξ
-🔍 Signer balance after deposit: 9999.998778806613029611 Ξ
+🔍 Signer balance after deposit: 9999.998764432830121729 Ξ
 ⚠️ Call reverted with SampleError: "hello from revert!"
 ```
 

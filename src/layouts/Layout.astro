@@ -151,7 +151,13 @@ const structuredData = {
         />
       )
     }
-
+    <link
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
+      rel="preload"
+      as="style"
+      onload="this.onload=null; this.rel='stylesheet';"
+      crossorigin      
+    />
     <ViewTransitions />
 
     <script is:inline src="/scripts/toggle-theme.js" async></script>
