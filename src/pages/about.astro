@@ -1,15 +1,15 @@
 ---
-import { getCollection } from 'astro:content';
-import type { CollectionEntry } from 'astro:content';
-import AboutLayout from '../layouts/AboutLayout.astro';
+import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import AboutLayout from "../layouts/AboutLayout.astro";
 import Socials from "../components/Socials.astro";
 
-const authorEntries = await getCollection('authors');
+const authorEntries = await getCollection("authors");
 
 // Render each author's content
 const authors = await Promise.all(
-  authorEntries.map(async (author:  CollectionEntry<"authors">) => {
-    const { Content } = await author.render();
+  authorEntries.map(async (author: CollectionEntry<"authors">) => {
+    const { Content } = await render(author);
     return {
       ...author,
       Content,
@@ -19,30 +19,43 @@ const authors = await Promise.all(
 ---
 
 <AboutLayout frontmatter={{ title: "About" }}>
-  {authors.map(author => (
-    <article class="items-start space-y-2 sm:grid sm:grid-cols-3 sm:gap-x-8 sm:space-y-0 author-item" itemscope itemtype="https://schema.org/Person">
-      <div class="prose dark:prose-invert flex flex-col items-center space-x-2 pt-8">
-        {author.data.avatar && (
-          <figure class="p-0 m-0">
-          <img
-            src={author.data.avatar}
-            alt={`${author.data.name}'s avatar`}
-            width={192}
-            height={192}
-            class="h-48 w-48 rounded-full"
-            itemprop="image"
-          />
-          </figure>
-          <figcaption class="sr-only">Avatar of {author.data.name}</figcaption>
-        )}
-        <h3 class="text-2xl font-bold leading-8 tracking-tight"  itemprop="name">{author.data.name}</h3>
-        <div itemprop="jobTitle">{author.data.occupation}</div>
-        <div itemprop="worksFor">{author.data.company}</div>
-        <Socials centered socials={author.data.socials} />
-      </div>
-      <div class="prose max-w-none pb-8 pt-8 dark:prose-invert sm:col-span-2 author-content">
-        <author.Content />        
-      </div>
-    </article>
-  ))}
+  {
+    authors.map(author => (
+      <article
+        class="items-start space-y-2 sm:grid sm:grid-cols-3 sm:gap-x-8 sm:space-y-0 author-item"
+        itemscope
+        itemtype="https://schema.org/Person"
+      >
+        <div class="prose dark:prose-invert flex flex-col items-center space-x-2 pt-8">
+          {author.data.avatar && (
+            <figure class="p-0 m-0">
+              <img
+                src={author.data.avatar}
+                alt={`${author.data.name}'s avatar`}
+                width={192}
+                height={192}
+                class="h-48 w-48 rounded-full"
+                itemprop="image"
+              />
+              <figcaption class="sr-only">
+                Avatar of {author.data.name}
+              </figcaption>
+            </figure>
+          )}
+          <h3
+            class="text-2xl font-bold leading-8 tracking-tight"
+            itemprop="name"
+          >
+            {author.data.name}
+          </h3>
+          <div itemprop="jobTitle">{author.data.occupation}</div>
+          <div itemprop="worksFor">{author.data.company}</div>
+          <Socials centered socials={author.data.socials} />
+        </div>
+        <div class="prose max-w-none pb-8 pt-8 dark:prose-invert sm:col-span-2 author-content">
+          <author.Content />
+        </div>
+      </article>
+    ))
+  }
 </AboutLayout>

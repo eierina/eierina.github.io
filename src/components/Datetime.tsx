@@ -12,7 +12,7 @@ interface EditPostProps {
 }
 
 interface TagProps {
-  tags?: string[]
+  tags?: string[];
 }
 
 interface Props extends DatetimesProps, EditPostProps, TagProps {
@@ -27,7 +27,7 @@ export default function Datetime({
   className = "",
   editPost,
   postId,
-  tags
+  tags,
 }: Props) {
   return (
     <div
@@ -59,17 +59,17 @@ export default function Datetime({
         <FormattedDatetime
           pubDatetime={pubDatetime}
           modDatetime={modDatetime}
-        />        
-        { tags && (
+        />
+        {tags && (
           <>
             <span>-</span>
             <ul className="flex space-x-2">
               {tags.map((tag: string, index: number) => (
                 <li
-                key={index}
-                className="flex items-center space-x-0.5 lowercase rounded-full border border-transparent bg-[rgb(var(--color-card))] px-2"
-              >
-                <svg
+                  key={index}
+                  className="flex items-center space-x-0.5 lowercase rounded-full border border-transparent bg-[rgb(var(--color-card))] px-2"
+                >
+                  <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="none"
@@ -84,14 +84,14 @@ export default function Datetime({
                     <line x1="10" x2="8" y1="3" y2="21"></line>
                     <line x1="16" x2="14" y1="3" y2="21"></line>
                   </svg>
-                <span>{tag.replace(/\s+/g, '-')}</span>
-              </li>
+                  <span>{tag.replace(/\s+/g, "-")}</span>
+                </li>
               ))}
             </ul>
           </>
         )}
         {size === "lg" && <EditPost editPost={editPost} postId={postId} />}
-        </div>
+      </div>
       {/* </span> */}
     </div>
   );

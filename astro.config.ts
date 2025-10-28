@@ -32,7 +32,10 @@ export default defineConfig({
     rehypePlugins: [rehypeKatex],
     shikiConfig: {
       // For more themes, visit https://shiki.style/themes
-      themes: { light: "github-light-high-contrast", dark: "github-dark-high-contrast" },
+      themes: {
+        light: "github-light-high-contrast",
+        dark: "github-dark-high-contrast",
+      },
       wrap: true,
     },
   },
@@ -42,7 +45,4 @@ export default defineConfig({
     },
   },
   scopedStyleStrategy: "where",
-  experimental: {
-    contentLayer: true,
-  },
 });

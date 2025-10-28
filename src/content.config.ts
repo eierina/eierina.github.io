@@ -1,7 +1,7 @@
 import { SITE } from "@config";
 import { glob } from "astro/loaders";
 import { defineCollection, z } from "astro:content";
-import type { SocialObjects, AuthorData } from "../types"
+import type { SocialObjects } from "./types";
 
 const blog = defineCollection({
   type: "content_layer",
@@ -73,6 +73,5 @@ const authors = defineCollection({
         ].filter(Boolean) as SocialObjects,
       })),
 });
-
 
 export const collections = { blog, authors };

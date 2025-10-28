@@ -91,7 +91,7 @@ contract SampleContract {
     event ValueChanged(address indexed updater, uint256 indexed oldValue, uint256 newValue);
 
     // Event to be emitted when Ether is received via the deposit function
-    event EtherReceived(address indexed sender, uint256 amount, uint256 newBalance);    
+    event EtherReceived(address indexed sender, uint256 amount, uint256 newBalance);
 
     // Event to be emitted when Ether is withdrawn via the withdraw function
     event EtherWithdrawn(address indexed recipient, uint256 amount, uint256 remainingBalance);
@@ -111,7 +111,7 @@ contract SampleContract {
         uint256 oldValue = value;
         value = _value;
         emit ValueChanged(msg.sender, oldValue, _value);
-    }    
+    }
 
     /// @notice Retrieves the current value of the 'value' state variable
     /// @return currentValue The current value stored in 'value'
@@ -141,7 +141,7 @@ contract SampleContract {
     /// @dev Used to demonstrate custom error handling in Solidity
     function revertWithError() external pure {
         revert SampleError("hello from revert!");
-    }    
+    }
 }
 ```
 
@@ -171,7 +171,7 @@ use url::Url;
 use crate::SampleContract::SampleContractErrors;
 use crate::SampleContract::SampleContractEvents;
 
-sol! {    
+sol! {
     #[sol(rpc, bytecode = "<BYTECODE>")]
     contract SampleContract {
         // Events
@@ -368,9 +368,11 @@ let nonce = provider.get_transaction_count(signer_address).pending().await?;
 ## Calculating Transaction's Gas Parameters
 
 To determine the total cost of a transaction, we need two components: the amount of computational work (gas units) and the price per unit of that work. The price per unit consists of the network's base fee plus any optional tip we choose to add. Let's break down how we calculate these components.
+
 <!-- To estimate how much gas is necessary to allow the transaction to complete, we'll use the `eth_estimateGas` JSON-RPC method.
 
 Ultimately, $$\text{cost} = \text{estimated\_gas} \times (\text{base\_fee} + \text{tip})$$ -->
+
 ### Gas Fees and Their Components
 
 EIP-1559 splits gas fees into two components that together determine the price per unit of computational work:
@@ -405,6 +407,7 @@ $$
 $$
 
 **Parameters:**
+
 - $\text{base\_fee}_{(n)}$: Base fee of the current block.
 - $\text{gas\_used}_{(n)}$: Total gas used by the current block.
 - $\text{gas\_target}$: Typically 50% of the gas limit. Note that as of the London hard fork, the block gas limit is set to 30 million.
@@ -413,33 +416,33 @@ Here’s the function to calculate the base fee according to the formula:
 
 ```rust
 // Calculates the base fee per gas for the next block based on EIP-1559 specifications.
-pub fn calculate_base_fee_per_gas(  
-    base_fee: u64,  
-    gas_used: u64,  
-    gas_limit: u64,  
-) -> u64 {  
-    // Calculate the target gas usage (50% of the gas limit)  
+pub fn calculate_base_fee_per_gas(
+    base_fee: u64,
+    gas_used: u64,
+    gas_limit: u64,
+) -> u64 {
+    // Calculate the target gas usage (50% of the gas limit)
     let gas_target = gas_limit / 2;
-  
+
     // Calculate the difference between gas used and gas target
     let gas_delta = gas_used as i64 - gas_target as i64;
-  
+
     // Maximum base fee change is 12.5% of the current base fee
     let max_base_fee_change = base_fee / 8;
-  
+
     // If gas usage is exactly at the target, base fee remains the same
     if gas_delta == 0 {
         return base_fee;
     }
-  
+
     // Calculate the absolute value of gas delta for adjustment calculation
     let gas_delta_abs = gas_delta.abs() as u64;
-  
+
     // Compute the base fee change
     // Using u128 to prevent potential overflow in intermediate calculations
     let base_fee_change = ((max_base_fee_change as u128 * gas_delta_abs as u128)
         / gas_target as u128) as u64;
-  
+
     if gas_delta > 0 {
         // Increase base fee by the calculated change
         base_fee + base_fee_change
@@ -614,7 +617,7 @@ To successfully run the example, ensure that **Anvil** is operating locally with
 ### Steps to Run the Example
 
 1. **Start Anvil Locally:**
-   
+
    Begin by launching Anvil with the specified block time. Open your terminal and execute the following command:
 
    ```shell
@@ -624,15 +627,15 @@ To successfully run the example, ensure that **Anvil** is operating locally with
    This command initializes Anvil with a block time of 3 seconds, meaning a new block is mined every 3 seconds.
 
 2. **Execute Your Code:**
-   
-   With Anvil running, execute the code we wrote so far. 
-   
-     ```shell
-     cargo run
-     ```
+
+   With Anvil running, execute the code we wrote so far.
+
+   ```shell
+   cargo run
+   ```
 
 3. **Observe the Output:**
-   
+
    As the code runs, you should see output similar to the example below. This output provides real-time feedback on the status of each transaction and the state of the contract.
 
 ### Example Output
@@ -651,6 +654,7 @@ To successfully run the example, ensure that **Anvil** is operating locally with
 > **Timing Note:** Notice that after a transaction is sent, there is an approximate delay of **6 to 9 seconds** before the transaction is confirmed. This delay is influenced by the product of `block time` setting in Anvil, which controls how frequently new blocks are mined, and the `confirmations` variable we set in the code.
 
 ## Conclusion
+
 In this tutorial, we've:
 
 - Manually Composed Transactions: Utilized TransactionRequest to build transactions without high-level abstractions.
@@ -659,4 +663,4 @@ In this tutorial, we've:
 - Handled Nonces Effectively: Ensured transaction uniqueness and prevented reuse by accurately managing nonces, including pending transactions.
 - Deployed and Interacted with Contracts: Successfully deployed the SampleContract and performed interactions such as setting and retrieving values.
 - Implemented Confirmation Strategies: Applied a confirmation strategy to wait for a specified number of block confirmations, enhancing transaction reliability.
-These steps deepen your understanding of transaction mechanics and gas management on the Ethereum blockchain using Rust and Alloy, setting the stage for more complex blockchain interactions in the upcoming REVM series.
+  These steps deepen your understanding of transaction mechanics and gas management on the Ethereum blockchain using Rust and Alloy, setting the stage for more complex blockchain interactions in the upcoming REVM series.

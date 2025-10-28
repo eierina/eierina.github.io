@@ -8,8 +8,7 @@ tags:
   - Alloy
   - EVM
   - Rust
-description:
-  Discover how to use Alloy, a powerful Rust library, for blockchain development in the first installment of the Alloy in Action series. This blog post guides you through setting up the development environment with Rust, Foundry, and Solidity, and walks you through creating both Rust and Solidity projects. Learn to deploy smart contracts using Alloy's sol! macro, interact with contracts, handle transactions and receipts, decode events, manage Ether transfers, and implement comprehensive error handling.
+description: Discover how to use Alloy, a powerful Rust library, for blockchain development in the first installment of the Alloy in Action series. This blog post guides you through setting up the development environment with Rust, Foundry, and Solidity, and walks you through creating both Rust and Solidity projects. Learn to deploy smart contracts using Alloy's sol! macro, interact with contracts, handle transactions and receipts, decode events, manage Ether transfers, and implement comprehensive error handling.
 ---
 
 Welcome to the first post in the "Alloy in Action" series! Today, we'll explore how to use [Alloy](https://github.com/alloy-rs/alloy) - a powerful Rust library for blockchain development. This series aims to introduce you to the basics of connecting Rust applications to the blockchain, deploying and interacting with smart contracts, and decoding events and errors.
@@ -17,13 +16,14 @@ Welcome to the first post in the "Alloy in Action" series! Today, we'll explore 
 **Note:** The full code for this tutorial is available on GitHub: [eierina/alloy-in-action/01-deploy-interact-decode](https://github.com/eierina/alloy-in-action/tree/main/01-deploy-interact-decode).
 
 This tutorial assumes a basic understanding of Solidity and Rust. If you're new to Rust, consider this an opportunity to learn by doing, as we'll introduce concepts incrementally and with increasing complexity.
+
 ## Setting Up the Environment
 
 Before diving into the code, ensure you have the following set up:
 
 - **Rust** installed on your machine (or click [here](https://www.rust-lang.org/tools/install) for install instructions).
 - **Foundry toolchain** installed on your machine (or click [here](https://book.getfoundry.sh/getting-started/installation) for install instructions)
-	- [Anvil](https://book.getfoundry.sh/anvil/) running as our local Ethereum node simulator with default options (just run `anvil` on the command line and you'll have a local testnet on [http://127.0.0.1:8545](http://127.0.0.1:8545)).
+  - [Anvil](https://book.getfoundry.sh/anvil/) running as our local Ethereum node simulator with default options (just run `anvil` on the command line and you'll have a local testnet on [http://127.0.0.1:8545](http://127.0.0.1:8545)).
 - **Solidity 0.8.24 compiler** installed on your machine (or click [here](https://github.com/crytic/solc-select) for instructions on how to install `solc-select`)
 
 Create a new Rust project with the required dependencies and features:
@@ -55,9 +55,9 @@ Create a `.env` file in the root folder with the following variables:
 
 ```shell
 # Private key for the first default Anvil account
-ANVIL_PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80  
+ANVIL_PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 # RPC URL for the Anvil local Ethereum node
-ANVIL_RPC_URL=http://127.0.0.1:8545  
+ANVIL_RPC_URL=http://127.0.0.1:8545
 # Default chain ID for the Anvil network
 ANVIL_CHAIN_ID=31337
 ```
@@ -85,7 +85,7 @@ contract SampleContract {
     event ValueChanged(address indexed updater, uint256 indexed oldValue, uint256 newValue);
 
     // Event to be emitted when Ether is received via the deposit function
-    event EtherReceived(address indexed sender, uint256 amount, uint256 newBalance);    
+    event EtherReceived(address indexed sender, uint256 amount, uint256 newBalance);
 
     // Event to be emitted when Ether is withdrawn via the withdraw function
     event EtherWithdrawn(address indexed recipient, uint256 amount, uint256 remainingBalance);
@@ -105,7 +105,7 @@ contract SampleContract {
         uint256 oldValue = value;
         value = _value;
         emit ValueChanged(msg.sender, oldValue, _value);
-    }    
+    }
 
     /// @notice Retrieves the current value of the 'value' state variable
     /// @return currentValue The current value stored in 'value'
@@ -135,7 +135,7 @@ contract SampleContract {
     /// @dev Used to demonstrate custom error handling in Solidity
     function revertWithError() external pure {
         revert SampleError("hello from revert!");
-    }    
+    }
 }
 ```
 
@@ -165,7 +165,7 @@ use url::Url;
 use crate::SampleContract::SampleContractErrors;
 use crate::SampleContract::SampleContractEvents;
 
-sol! {    
+sol! {
     #[sol(rpc, bytecode = "<BYTECODE>")]
     contract SampleContract {
         // Events
@@ -266,12 +266,12 @@ let wallet = EthereumWallet::from(signer);
 
 - **Local Signers:** `PrivateKeySigner`, `MnemonicSigner`
 - **Hardware Wallets:** Ledger, Trezor
-- **Cloud-Based:** Amazon AWS' KMS, Google Cloud Platform's KMS 
+- **Cloud-Based:** Amazon AWS' KMS, Google Cloud Platform's KMS
 - **Hardware Security Module:** YubiHSM2
 
 ## Connecting to the Network
 
-We create a provider to connect to the Ethereum-like network (an Anvil local testnet in this case). 
+We create a provider to connect to the Ethereum-like network (an Anvil local testnet in this case).
 
 ```rust
 // Set up provider
@@ -410,13 +410,13 @@ let pending_tx = tx_builder.register().await?;
 let tx_hash = pending_tx.await?;
 println!("🔄 Transaction sent to deposit Ether. Transaction hash: {:#x}", tx_hash);
 
-// Get the transaction receipt  
-let receipt = provider  
-    .get_transaction_receipt(tx_hash)  
-    .await?  
-    .expect("Transaction receipt not found");  
-println!("🧾 Transaction receipt obtained. Receipt hash: {:#x}", receipt.transaction_hash);  
-  
+// Get the transaction receipt
+let receipt = provider
+    .get_transaction_receipt(tx_hash)
+    .await?
+    .expect("Transaction receipt not found");
+println!("🧾 Transaction receipt obtained. Receipt hash: {:#x}", receipt.transaction_hash);
+
 // Iterate over each log present in the transaction receipt
 for log in receipt.inner.logs() {
     // Attempt to decode the current log into a SampleContractEvents instance

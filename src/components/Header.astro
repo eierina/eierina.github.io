@@ -10,32 +10,29 @@ export interface Props {
 const { activeNav } = Astro.props;
 ---
 
-      
 <header>
   <a id="skip-to-content" href="#main-content">Skip to content</a>
   <div class="nav-container">
     <div class="top-nav-wrap">
       <div>
-      <a href="/" class="logo whitespace-nowrap">
-        {
-          LOGO_IMAGE.enable ? (
-            <img
-              src={`/assets/${LOGO_IMAGE.svg ? "logo.svg" : "logo.png"}`}
-              alt={SITE.title}
-              width={LOGO_IMAGE.width}
-              height={LOGO_IMAGE.height}
-            />
-          ) : (
-            SITE.title
-          )
-        }
-      </a>
-      { true && (
-        <>
-        <div class="blog-description">A developer's take on mastery and exploration of blockchain technology for fun and profit.</div>
-        </>
-        )
-      }
+        <a href="/" class="logo whitespace-nowrap">
+          {
+            LOGO_IMAGE.enable ? (
+              <img
+                src={`/assets/${LOGO_IMAGE.svg ? "logo.svg" : "logo.png"}`}
+                alt={SITE.title}
+                width={LOGO_IMAGE.width}
+                height={LOGO_IMAGE.height}
+              />
+            ) : (
+              SITE.title
+            )
+          }
+        </a>
+        <div class="blog-description">
+          A developer's take on mastery and exploration of blockchain technology
+          for fun and profit.
+        </div>
       </div>
       <nav id="nav-menu">
         <button
@@ -156,7 +153,7 @@ const { activeNav } = Astro.props;
         </ul>
       </nav>
     </div>
-  </div>        
+  </div>
   <Hr />
 </header>
 
@@ -165,17 +162,19 @@ const { activeNav } = Astro.props;
     @apply absolute -top-full left-16 z-50 bg-skin-accent px-3 py-2 text-skin-inverted transition-all focus:top-4;
   }
   .nav-container {
-    @apply mx-auto flex max-w-5xl flex-col items-center justify-between sm:flex-row;
+    @apply mx-auto flex flex-col items-center justify-between px-6 sm:flex-row sm:px-8;
+    max-width: 72ch;
   }
   .top-nav-wrap {
-    @apply relative flex w-full items-start justify-between p-4 sm:items-center sm:py-8 sm:pb-2;
+    @apply relative flex w-full items-start justify-between p-4 sm:items-center sm:py-10 sm:pb-4;
   }
   .logo {
-    @apply absolute py-1 text-xl font-semibold sm:static sm:text-2xl;
+    @apply absolute py-1 text-2xl font-bold tracking-tight sm:static sm:text-3xl;
+    letter-spacing: -0.02em;
   }
   .blog-description {
-    /* @apply absolute py-1 text-xl font-semibold sm:static sm:text-2xl; */
-    @apply italic text-sm py-2 m-0 p-0 hidden sm:block
+    @apply text-[15px] leading-[1.6] py-2 m-0 p-0 hidden sm:block text-skin-base/70 font-normal max-w-[500px];
+    letter-spacing: -0.005em;
   }
   .hamburger-menu {
     @apply self-end p-2 sm:hidden;
@@ -194,7 +193,7 @@ const { activeNav } = Astro.props;
     @apply col-span-2 flex items-center justify-center;
   }
   nav ul li a {
-    @apply w-full px-4 py-3 text-center font-medium hover:text-skin-accent sm:my-0 sm:px-2 sm:py-1;
+    @apply w-full px-4 py-3 text-center text-[15px] font-medium tracking-[-0.01em] transition-colors duration-200 hover:text-skin-accent sm:my-0 sm:px-3 sm:py-2;
   }
   nav ul li:nth-last-child(2) a {
     @apply w-auto;
@@ -202,7 +201,7 @@ const { activeNav } = Astro.props;
   nav ul li:nth-last-child(1),
   nav ul li:nth-last-child(2) {
     @apply col-span-1;
-  }  
+  }
   nav a.active svg {
     @apply fill-skin-accent;
   }
@@ -232,7 +231,6 @@ const { activeNav } = Astro.props;
   .menu-icon.is-active .close {
     @apply opacity-100;
   }
-
 </style>
 
 <script>
