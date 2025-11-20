@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Article Design - Blockchain Dev Blog</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-bg: 255, 255, 255;
+            --color-text: 23, 23, 23;
+            --color-text-muted: 82, 82, 91;
+            --color-accent: 20, 184, 166;
+            --color-border: 228, 228, 231;
+            --color-code-bg: 250, 250, 250;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 18px;
+            line-height: 1.7;
+            color: rgb(var(--color-text));
+            background: rgb(var(--color-bg));
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            border-bottom: 1px solid rgb(var(--color-border));
+            padding: 32px 0;
+            margin-bottom: 48px;
+        }
+
+        .site-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: rgb(var(--color-text));
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        /* Article Layout - Two Column */
+        .article-wrapper {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 64px;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Table of Contents - Sticky */
+        .toc {
+            position: sticky;
+            top: 32px;
+            align-self: start;
+            max-height: calc(100vh - 64px);
+            overflow-y: auto;
+        }
+
+        .toc-title {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgb(var(--color-text-muted));
+            margin-bottom: 16px;
+        }
+
+        .toc-list {
+            list-style: none;
+        }
+
+        .toc-list li {
+            margin-bottom: 8px;
+        }
+
+        .toc-list a {
+            font-size: 14px;
+            color: rgb(var(--color-text-muted));
+            text-decoration: none;
+            transition: color 0.2s;
+            display: block;
+            padding: 4px 0;
+            line-height: 1.5;
+        }
+
+        .toc-list a:hover,
+        .toc-list a.active {
+            color: rgb(var(--color-accent));
+        }
+
+        .toc-list .toc-h3 {
+            padding-left: 16px;
+            font-size: 13px;
+        }
+
+        /* Article Content */
+        .article-content {
+            max-width: 72ch;
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid rgb(var(--color-border));
+        }
+
+        .article-meta-item {
+            font-size: 14px;
+            color: rgb(var(--color-text-muted));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .article-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: rgb(var(--color-code-bg));
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 13px;
+            color: rgb(var(--color-text-muted));
+            border: 1px solid rgb(var(--color-border));
+        }
+
+        h1 {
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+        }
+
+        h2 {
+            font-size: 32px;
+            font-weight: 600;
+            line-height: 1.2;
+            letter-spacing: -0.015em;
+            margin-top: 48px;
+            margin-bottom: 24px;
+            padding-top: 16px;
+        }
+
+        h3 {
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-top: 32px;
+            margin-bottom: 16px;
+        }
+
+        p {
+            margin-bottom: 24px;
+            color: rgb(var(--color-text));
+        }
+
+        /* Code Blocks */
+        pre {
+            background: rgb(var(--color-code-bg));
+            border: 1px solid rgb(var(--color-border));
+            border-radius: 12px;
+            padding: 24px;
+            overflow-x: auto;
+            margin: 32px 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            font-size: 15px;
+            background: rgb(var(--color-code-bg));
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid rgb(var(--color-border));
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            border: none;
+            font-size: 14px;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            margin: 32px 0;
+            overflow-x: auto;
+            border: 1px solid rgb(var(--color-border));
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        thead {
+            background: rgb(var(--color-code-bg));
+        }
+
+        th {
+            text-align: left;
+            padding: 16px;
+            font-weight: 600;
+            border-bottom: 2px solid rgb(var(--color-border));
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid rgb(var(--color-border));
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Callout Box */
+        .callout {
+            background: rgba(var(--color-accent), 0.05);
+            border-left: 4px solid rgb(var(--color-accent));
+            padding: 20px 24px;
+            margin: 32px 0;
+            border-radius: 8px;
+        }
+
+        .callout-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: rgb(var(--color-accent));
+        }
+
+        /* Reading Progress Bar */
+        .reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: rgb(var(--color-accent));
+            z-index: 1000;
+            transition: width 0.1s ease;
+        }
+
+        @media (max-width: 1024px) {
+            .article-wrapper {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .toc {
+                position: static;
+                max-height: none;
+                padding: 20px;
+                background: rgb(var(--color-code-bg));
+                border-radius: 12px;
+                margin-bottom: 32px;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+
+            h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="reading-progress"></div>
+
+    <header>
+        <div class="container">
+            <a href="/" class="site-title">Blockchain Dev Blog</a>
+        </div>
+    </header>
+
+    <div class="article-wrapper">
+        <!-- Table of Contents -->
+        <aside class="toc">
+            <div class="toc-title">On This Page</div>
+            <ul class="toc-list">
+                <li><a href="#introduction" class="active">Introduction</a></li>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#implementation">Implementation</a></li>
+                <li><a href="#implementation-setup" class="toc-h3">Environment Setup</a></li>
+                <li><a href="#implementation-code" class="toc-h3">Core Implementation</a></li>
+                <li><a href="#comparison">Framework Comparison</a></li>
+                <li><a href="#best-practices">Best Practices</a></li>
+                <li><a href="#conclusion">Conclusion</a></li>
+            </ul>
+        </aside>
+
+        <!-- Article Content -->
+        <article class="article-content">
+            <h1>Advanced Transaction Composition with Alloy: A Deep Dive</h1>
+
+            <div class="article-meta">
+                <span class="article-meta-item">Jan 15, 2025</span>
+                <span class="article-meta-item">12 min read</span>
+            </div>
+
+            <div class="article-tags">
+                <span class="tag">#Rust</span>
+                <span class="tag">#Alloy</span>
+                <span class="tag">#EVM</span>
+            </div>
+
+            <section id="introduction">
+                <p>
+                    In this comprehensive guide, we'll explore advanced transaction composition patterns using Alloy,
+                    Rust's most powerful Ethereum library. We'll cover everything from basic setup to production-ready
+                    gas management strategies.
+                </p>
+            </section>
+
+            <section id="overview">
+                <h2>Overview</h2>
+                <p>
+                    Transaction composition in Ethereum involves carefully orchestrating multiple components: nonce management,
+                    gas estimation, signing, and broadcasting. Each step requires precision to ensure reliability and cost-effectiveness.
+                </p>
+
+                <div class="callout">
+                    <div class="callout-title">💡 Key Insight</div>
+                    <p>
+                        Proper gas estimation can save you up to 30% in transaction costs while maintaining reliability.
+                        This is especially critical for high-frequency applications.
+                    </p>
+                </div>
+            </section>
+
+            <section id="implementation">
+                <h2>Implementation</h2>
+
+                <h3 id="implementation-setup">Environment Setup</h3>
+                <p>
+                    First, let's set up our development environment with the necessary dependencies:
+                </p>
+
+                <pre><code>[dependencies]
+alloy = { version = "0.1", features = ["full"] }
+tokio = { version = "1", features = ["full"] }
+eyre = "0.6"</code></pre>
+
+                <h3 id="implementation-code">Core Implementation</h3>
+                <p>
+                    Here's a production-ready implementation of transaction composition with automatic gas estimation:
+                </p>
+
+                <pre><code>use alloy::prelude::*;
+
+async fn send_transaction(
+    provider: &Provider,
+    signer: &LocalWallet,
+    to: Address,
+    value: U256,
+) -> Result&lt;TxHash&gt; {
+    // Get current nonce
+    let nonce = provider
+        .get_transaction_count(signer.address())
+        .await?;
+
+    // Estimate gas
+    let gas = provider
+        .estimate_gas(&tx_request)
+        .await?;
+
+    // Build and send transaction
+    let tx = TransactionRequest::new()
+        .to(to)
+        .value(value)
+        .nonce(nonce)
+        .gas_limit(gas * 120 / 100); // 20% buffer
+
+    Ok(provider.send_transaction(tx).await?)
+}</code></pre>
+            </section>
+
+            <section id="comparison">
+                <h2>Framework Comparison</h2>
+                <p>
+                    Let's compare different approaches to transaction management across popular Rust blockchain libraries:
+                </p>
+
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Alloy</th>
+                                <th>ethers-rs</th>
+                                <th>web3.rs</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Type Safety</td>
+                                <td>Excellent</td>
+                                <td>Good</td>
+                                <td>Fair</td>
+                            </tr>
+                            <tr>
+                                <td>Performance</td>
+                                <td>Best-in-class</td>
+                                <td>Good</td>
+                                <td>Moderate</td>
+                            </tr>
+                            <tr>
+                                <td>Gas Estimation</td>
+                                <td>Automatic</td>
+                                <td>Manual</td>
+                                <td>Manual</td>
+                            </tr>
+                            <tr>
+                                <td>Learning Curve</td>
+                                <td>Moderate</td>
+                                <td>Steep</td>
+                                <td>Gentle</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="best-practices">
+                <h2>Best Practices</h2>
+                <p>
+                    When working with transaction composition, keep these principles in mind:
+                </p>
+                <ul>
+                    <li>Always add a 10-20% buffer to gas estimates</li>
+                    <li>Implement proper nonce tracking for concurrent transactions</li>
+                    <li>Use EIP-1559 transactions for better fee markets</li>
+                    <li>Monitor mempool conditions before sending high-value transactions</li>
+                </ul>
+            </section>
+
+            <section id="conclusion">
+                <h2>Conclusion</h2>
+                <p>
+                    Advanced transaction composition is a critical skill for blockchain developers. By mastering these patterns,
+                    you'll build more reliable, cost-effective applications that scale with your users' needs.
+                </p>
+            </section>
+        </article>
+    </div>
+
+    <script>
+        // Reading progress indicator
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.querySelector('.reading-progress').style.width = scrolled + '%';
+        });
+
+        // Active TOC link on scroll
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                const id = entry.target.getAttribute('id');
+                if (entry.isIntersecting) {
+                    document.querySelectorAll('.toc-list a').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    const activeLink = document.querySelector(`.toc-list a[href="#${id}"]`);
+                    if (activeLink) activeLink.classList.add('active');
+                }
+            });
+        }, { rootMargin: '0px 0px -80% 0px' });
+
+        document.querySelectorAll('section[id]').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

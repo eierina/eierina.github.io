@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Blog Listing - Blockchain Dev Blog</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-bg: 255, 255, 255;
+            --color-text: 23, 23, 23;
+            --color-text-muted: 82, 82, 91;
+            --color-accent: 20, 184, 166;
+            --color-border: 228, 228, 231;
+            --color-card-bg: 255, 255, 255;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 18px;
+            line-height: 1.7;
+            color: rgb(var(--color-text));
+            background: rgb(250, 250, 250);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            background: rgb(var(--color-bg));
+            border-bottom: 1px solid rgb(var(--color-border));
+            padding: 32px 0;
+            margin-bottom: 48px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .site-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: rgb(var(--color-text));
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid rgb(var(--color-border));
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: rgb(var(--color-text));
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            border-color: rgb(var(--color-accent));
+            color: rgb(var(--color-accent));
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 64px;
+            padding: 48px 0;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 16px;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: rgb(var(--color-text-muted));
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Category Filter */
+        .category-filter {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 48px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .filter-btn {
+            background: rgb(var(--color-bg));
+            border: 1px solid rgb(var(--color-border));
+            padding: 12px 24px;
+            border-radius: 24px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            color: rgb(var(--color-text));
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .filter-btn:hover {
+            border-color: rgb(var(--color-accent));
+            color: rgb(var(--color-accent));
+        }
+
+        .filter-btn.active {
+            background: rgb(var(--color-accent));
+            color: white;
+            border-color: rgb(var(--color-accent));
+        }
+
+        /* Blog Grid */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 32px;
+            margin-bottom: 64px;
+        }
+
+        /* Article Card - Enhanced */
+        .article-card {
+            background: rgb(var(--color-card-bg));
+            border: 1px solid rgb(var(--color-border));
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .article-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            border-color: rgba(var(--color-accent), 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .card-category {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgb(var(--color-accent));
+            background: rgba(var(--color-accent), 0.1);
+            padding: 6px 12px;
+            border-radius: 12px;
+        }
+
+        .card-date {
+            font-size: 13px;
+            color: rgb(var(--color-text-muted));
+            font-weight: 500;
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 12px;
+            color: rgb(var(--color-text));
+            letter-spacing: -0.01em;
+        }
+
+        .card-excerpt {
+            font-size: 16px;
+            line-height: 1.6;
+            color: rgb(var(--color-text-muted));
+            margin-bottom: 24px;
+            flex-grow: 1;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid rgb(var(--color-border));
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 12px;
+            color: rgb(var(--color-text-muted));
+            background: rgb(250, 250, 250);
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid rgb(var(--color-border));
+        }
+
+        .read-more {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: rgb(var(--color-accent));
+            text-decoration: none;
+        }
+
+        .read-more svg {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.2s;
+        }
+
+        .article-card:hover .read-more svg {
+            transform: translateX(4px);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 32px;
+            margin-bottom: 48px;
+            padding: 24px;
+            background: rgb(var(--color-bg));
+            border-radius: 16px;
+            border: 1px solid rgb(var(--color-border));
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: rgb(var(--color-text));
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: rgb(var(--color-text-muted));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Featured Post */
+        .featured-post {
+            background: linear-gradient(135deg, rgb(var(--color-accent)), rgb(13, 148, 136));
+            border-radius: 24px;
+            padding: 48px;
+            margin-bottom: 64px;
+            color: white;
+        }
+
+        .featured-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 20px;
+        }
+
+        .featured-title {
+            font-size: 40px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .featured-excerpt {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            opacity: 0.95;
+        }
+
+        .featured-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            color: rgb(var(--color-accent));
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+
+        .featured-cta:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 40px;
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-filter {
+                flex-wrap: wrap;
+            }
+
+            .stats-bar {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .featured-post {
+                padding: 32px 24px;
+            }
+
+            .featured-title {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="site-title">Blockchain Dev Blog</a>
+                <button class="theme-toggle">Toggle Theme</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Blockchain Development Insights</h1>
+            <p>Deep technical dives into Rust, Alloy, and EVM development</p>
+        </section>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat">
+                <span class="stat-value">47</span>
+                <span class="stat-label">Articles</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value">12</span>
+                <span class="stat-label">Series</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value">8.5k</span>
+                <span class="stat-label">Readers</span>
+            </div>
+        </div>
+
+        <!-- Featured Post -->
+        <div class="featured-post">
+            <span class="featured-badge">Featured Post</span>
+            <h2 class="featured-title">Real-time Event Monitoring with Alloy: Stream Processing at Scale</h2>
+            <p class="featured-excerpt">
+                Learn how to build production-ready event monitoring systems using Alloy's stream processing capabilities.
+                We'll cover everything from basic event filtering to complex multi-contract monitoring patterns.
+            </p>
+            <a href="#" class="featured-cta">
+                Read Article
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="category-filter">
+            <button class="filter-btn active">All Posts</button>
+            <button class="filter-btn">Rust</button>
+            <button class="filter-btn">Alloy</button>
+            <button class="filter-btn">EVM</button>
+            <button class="filter-btn">Smart Contracts</button>
+            <button class="filter-btn">DeFi</button>
+        </div>
+
+        <!-- Blog Grid -->
+        <div class="blog-grid">
+            <!-- Article Card 1 -->
+            <article class="article-card">
+                <div class="card-header">
+                    <span class="card-category">Tutorial</span>
+                    <span class="card-date">Jan 15, 2025</span>
+                </div>
+                <h3 class="card-title">Advanced Transaction Composition and Gas Management</h3>
+                <p class="card-excerpt">
+                    Master the art of composing complex transactions with optimal gas usage. Learn advanced patterns
+                    for nonce management, gas estimation, and EIP-1559 fee markets.
+                </p>
+                <div class="card-footer">
+                    <div class="card-tags">
+                        <span class="tag">Rust</span>
+                        <span class="tag">Alloy</span>
+                        <span class="tag">Gas</span>
+                    </div>
+                    <a href="#" class="read-more">
+                        Read
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Article Card 2 -->
+            <article class="article-card">
+                <div class="card-header">
+                    <span class="card-category">Deep Dive</span>
+                    <span class="card-date">Jan 10, 2025</span>
+                </div>
+                <h3 class="card-title">Connect, Deploy, Interact: Getting Started with Alloy</h3>
+                <p class="card-excerpt">
+                    A comprehensive introduction to Alloy, Rust's powerful Ethereum library. Set up your development
+                    environment and deploy your first smart contract.
+                </p>
+                <div class="card-footer">
+                    <div class="card-tags">
+                        <span class="tag">Rust</span>
+                        <span class="tag">Alloy</span>
+                        <span class="tag">Basics</span>
+                    </div>
+                    <a href="#" class="read-more">
+                        Read
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Article Card 3 -->
+            <article class="article-card">
+                <div class="card-header">
+                    <span class="card-category">Analysis</span>
+                    <span class="card-date">Jan 5, 2025</span>
+                </div>
+                <h3 class="card-title">Understanding EVM Storage Layouts in Depth</h3>
+                <p class="card-excerpt">
+                    Explore the intricacies of Ethereum's storage model. From simple value types to complex nested
+                    mappings, understand how the EVM organizes contract state.
+                </p>
+                <div class="card-footer">
+                    <div class="card-tags">
+                        <span class="tag">EVM</span>
+                        <span class="tag">Storage</span>
+                    </div>
+                    <a href="#" class="read-more">
+                        Read
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Article Card 4 -->
+            <article class="article-card">
+                <div class="card-header">
+                    <span class="card-category">Guide</span>
+                    <span class="card-date">Dec 28, 2024</span>
+                </div>
+                <h3 class="card-title">Building MEV-Aware Applications with Flashbots</h3>
+                <p class="card-excerpt">
+                    Protect your users from frontrunning and sandwich attacks. Learn to integrate Flashbots and
+                    build MEV-aware applications that prioritize user welfare.
+                </p>
+                <div class="card-footer">
+                    <div class="card-tags">
+                        <span class="tag">MEV</span>
+                        <span class="tag">Security</span>
+                    </div>
+                    <a href="#" class="read-more">
+                        Read
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Article Card 5 -->
+            <article class="article-card">
+                <div class="card-header">
+                    <span class="card-category">Performance</span>
+                    <span class="card-date">Dec 20, 2024</span>
+                </div>
+                <h3 class="card-title">Optimizing RPC Calls: Batching and Caching Strategies</h3>
+                <p class="card-excerpt">
+                    Reduce latency and improve throughput with smart RPC optimization. Implement batching, caching,
+                    and connection pooling for production-grade applications.
+                </p>
+                <div class="card-footer">
+                    <div class="card-tags">
+                        <span class="tag">Performance</span>
+                        <span class="tag">RPC</span>
+                    </div>
+                    <a href="#" class="read-more">
+                        Read
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Article Card 6 -->
+            <article class="article-card">
+                <div class="card-header">
+                    <span class="card-category">Security</span>
+                    <span class="card-date">Dec 15, 2024</span>
+                </div>
+                <h3 class="card-title">Common Smart Contract Vulnerabilities and How to Avoid Them</h3>
+                <p class="card-excerpt">
+                    A practical guide to smart contract security. Learn about reentrancy, integer overflow,
+                    access control issues, and how to write secure Solidity code.
+                </p>
+                <div class="card-footer">
+                    <div class="card-tags">
+                        <span class="tag">Security</span>
+                        <span class="tag">Solidity</span>
+                    </div>
+                    <a href="#" class="read-more">
+                        Read
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <script>
+        // Category filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        // Card click to navigate
+        document.querySelectorAll('.article-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (!e.target.closest('.read-more')) {
+                    const link = card.querySelector('.read-more');
+                    if (link) link.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

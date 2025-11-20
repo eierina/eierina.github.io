@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V4 Article - Natural Scrolling Header + Active TOC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-bg: 255, 255, 255;
+            --color-text: 23, 23, 23;
+            --color-text-muted: 82, 82, 91;
+            --color-accent: 20, 184, 166;
+            --color-border: 228, 228, 231;
+            --color-code-bg: 250, 250, 250;
+            --color-subtle-bg: 249, 250, 251;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 18px;
+            line-height: 1.7;
+            color: rgb(var(--color-text));
+            background: rgb(var(--color-bg));
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Header - STATIC (scrolls naturally with page) */
+        header {
+            border-bottom: 1px solid rgb(var(--color-border));
+            padding: 24px 0;
+            background: rgb(var(--color-bg));
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .site-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: rgb(var(--color-text));
+            text-decoration: none;
+            letter-spacing: -0.01em;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .header-nav a {
+            font-size: 14px;
+            color: rgb(var(--color-text-muted));
+            text-decoration: none;
+            transition: color 0.2s;
+            font-weight: 500;
+        }
+
+        .header-nav a:hover {
+            color: rgb(var(--color-accent));
+        }
+
+        /* Article Layout - Normal spacing (no extra padding for fixed header) */
+        .article-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 64px 32px;
+            display: grid;
+            grid-template-columns: 1fr 720px 300px;
+            gap: 64px;
+        }
+
+        .article-aside-left {
+            position: sticky;
+            top: 32px;
+            align-self: start;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .share-button {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgb(var(--color-border));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgb(var(--color-bg));
+            cursor: pointer;
+            transition: all 0.2s;
+            color: rgb(var(--color-text-muted));
+        }
+
+        .share-button:hover {
+            border-color: rgb(var(--color-accent));
+            color: rgb(var(--color-accent));
+        }
+
+        /* Article Content */
+        .article-main {
+            max-width: 720px;
+        }
+
+        .article-header {
+            margin-bottom: 48px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid rgb(var(--color-border));
+        }
+
+        .article-category {
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgb(var(--color-accent));
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 20px;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            font-size: 14px;
+            color: rgb(var(--color-text-muted));
+        }
+
+        .article-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Typography */
+        .article-content h2 {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin-top: 56px;
+            margin-bottom: 20px;
+            scroll-margin-top: 32px;
+        }
+
+        .article-content h3 {
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-top: 40px;
+            margin-bottom: 16px;
+            scroll-margin-top: 32px;
+        }
+
+        .article-content p {
+            margin-bottom: 24px;
+            font-size: 18px;
+            line-height: 1.8;
+        }
+
+        /* Code blocks */
+        .article-content pre {
+            background: rgb(var(--color-code-bg));
+            border: 1px solid rgb(var(--color-border));
+            border-radius: 12px;
+            padding: 24px;
+            overflow-x: auto;
+            margin: 32px 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .article-content code {
+            font-family: 'Fira Code', monospace;
+            font-size: 15px;
+            background: rgb(var(--color-code-bg));
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid rgb(var(--color-border));
+        }
+
+        .article-content pre code {
+            background: none;
+            padding: 0;
+            border: none;
+            font-size: 14px;
+        }
+
+        /* Callout */
+        .callout {
+            background: rgb(var(--color-subtle-bg));
+            border: 1px solid rgb(var(--color-border));
+            border-left: 4px solid rgb(var(--color-accent));
+            padding: 24px;
+            margin: 32px 0;
+            border-radius: 8px;
+        }
+
+        .callout-icon {
+            display: inline-block;
+            margin-right: 8px;
+            font-size: 20px;
+        }
+
+        .callout-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .callout-content {
+            font-size: 16px;
+            line-height: 1.6;
+            color: rgb(var(--color-text-muted));
+        }
+
+        /* Table of Contents - Sticky with Active Highlighting */
+        .article-toc {
+            position: sticky;
+            top: 32px;
+            align-self: start;
+        }
+
+        .toc-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgb(var(--color-text-muted));
+            margin-bottom: 20px;
+        }
+
+        .toc-list {
+            list-style: none;
+            font-size: 14px;
+        }
+
+        .toc-list li {
+            margin-bottom: 12px;
+        }
+
+        .toc-list a {
+            color: rgb(var(--color-text-muted));
+            text-decoration: none;
+            transition: all 0.2s;
+            display: block;
+            line-height: 1.4;
+            padding-left: 12px;
+            border-left: 2px solid transparent;
+            margin-left: -12px;
+        }
+
+        .toc-list a:hover {
+            color: rgb(var(--color-text));
+        }
+
+        .toc-list a.active {
+            color: rgb(var(--color-accent));
+            border-left-color: rgb(var(--color-accent));
+            font-weight: 500;
+        }
+
+        .toc-list .toc-h3 {
+            padding-left: 28px;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .toc-list .toc-h3.active {
+            padding-left: 28px;
+        }
+
+        /* Related Articles */
+        .related-articles {
+            margin-top: 64px;
+            padding-top: 48px;
+            border-top: 1px solid rgb(var(--color-border));
+        }
+
+        .related-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .related-card {
+            border: 1px solid rgb(var(--color-border));
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: block;
+        }
+
+        .related-card:hover {
+            border-color: rgb(var(--color-accent));
+            transform: translateY(-2px);
+        }
+
+        .related-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: rgb(var(--color-text));
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .related-card-meta {
+            font-size: 13px;
+            color: rgb(var(--color-text-muted));
+        }
+
+        @media (max-width: 1200px) {
+            .article-container {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .article-aside-left,
+            .article-toc {
+                display: none;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+
+            .article-content h2 {
+                font-size: 28px;
+            }
+
+            .related-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header - Natural scrolling (no position: fixed) -->
+    <header>
+        <div class="header-container">
+            <a href="/" class="site-logo">Blockchain Dev</a>
+            <nav class="header-nav">
+                <a href="/posts">Articles</a>
+                <a href="/tags">Topics</a>
+                <a href="/about">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Article -->
+    <div class="article-container">
+        <!-- Left Sidebar - Social Share -->
+        <aside class="article-aside-left">
+            <button class="share-button" title="Share on Twitter">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+            </button>
+            <button class="share-button" title="Share on LinkedIn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                </svg>
+            </button>
+            <button class="share-button" title="Copy link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+            </button>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="article-main">
+            <article>
+                <header class="article-header">
+                    <span class="article-category">Tutorial</span>
+                    <h1>Real-time Event Monitoring with Alloy: Stream Processing at Scale</h1>
+                    <div class="article-meta">
+                        <span class="article-meta-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            Jan 20, 2025
+                        </span>
+                        <span class="article-meta-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 20h9"></path>
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                            </svg>
+                            15 min read
+                        </span>
+                        <span class="article-meta-item">
+                            By Santiago
+                        </span>
+                    </div>
+                </header>
+
+                <div class="article-content">
+                    <p>
+                        Building production-ready event monitoring systems requires understanding stream processing,
+                        efficient RPC usage, and proper error handling. In this guide, we'll explore how Alloy makes
+                        this process elegant and performant.
+                    </p>
+
+                    <div class="callout">
+                        <div class="callout-title">
+                            <span class="callout-icon">💡</span>
+                            Key Insight
+                        </div>
+                        <div class="callout-content">
+                            Event streams in Alloy are lazy and composable, meaning you can chain filters and
+                            transformations without performance overhead until you actually consume the stream.
+                        </div>
+                    </div>
+
+                    <h2 id="understanding">Understanding Event Streams</h2>
+                    <p>
+                        Ethereum emits events as transactions are processed. These events form a continuous stream
+                        that applications need to monitor, filter, and react to in real-time.
+                    </p>
+
+                    <h3 id="stream-model">The Stream Processing Model</h3>
+                    <p>
+                        Traditional polling approaches check for new events periodically, leading to either latency
+                        (infrequent polling) or wasted resources (frequent polling). Alloy's stream-based approach
+                        solves this elegantly.
+                    </p>
+
+                    <pre><code>use alloy::prelude::*;
+use futures::StreamExt;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let provider = Provider::builder()
+        .on_http(url.parse()?);
+
+    // Create event filter
+    let filter = Filter::new()
+        .address(contract_address)
+        .event("Transfer(address,address,uint256)");
+
+    // Subscribe to events
+    let mut stream = provider
+        .subscribe_logs(&filter)
+        .await?;
+
+    // Process events as they arrive
+    while let Some(log) = stream.next().await {
+        process_transfer_event(log).await?;
+    }
+
+    Ok(())
+}</code></pre>
+
+                    <h2 id="production">Production Patterns</h2>
+                    <p>
+                        Building robust event monitoring requires handling edge cases: reconnections, missed events,
+                        rate limiting, and more.
+                    </p>
+
+                    <h3 id="disconnections">Handling Disconnections</h3>
+                    <p>
+                        Networks fail. Your monitoring system shouldn't. Here's a pattern for automatic reconnection
+                        with exponential backoff:
+                    </p>
+
+                    <pre><code>async fn resilient_event_stream(
+    provider: Arc<Provider>,
+    filter: Filter,
+) -> impl Stream<Item = Log> {
+    stream::unfold(None, move |state| {
+        let provider = provider.clone();
+        let filter = filter.clone();
+
+        async move {
+            match state {
+                None => {
+                    // Initial connection
+                    match provider.subscribe_logs(&filter).await {
+                        Ok(stream) => Some((stream, Some(0u32))),
+                        Err(e) => {
+                            error!("Failed to subscribe: {}", e);
+                            sleep(Duration::from_secs(1)).await;
+                            Some((None, Some(1)))
+                        }
+                    }
+                }
+                Some(backoff) => {
+                    // Reconnection with backoff
+                    let delay = 2u64.pow(backoff.min(5));
+                    sleep(Duration::from_secs(delay)).await;
+
+                    match provider.subscribe_logs(&filter).await {
+                        Ok(stream) => Some((stream, Some(0))),
+                        Err(e) => {
+                            error!("Reconnection failed: {}", e);
+                            Some((None, Some(backoff + 1)))
+                        }
+                    }
+                }
+            }
+        }
+    })
+    .flatten()
+}</code></pre>
+
+                    <div class="callout">
+                        <div class="callout-title">
+                            <span class="callout-icon">⚠️</span>
+                            Production Warning
+                        </div>
+                        <div class="callout-content">
+                            Always implement connection retry logic with exponential backoff. Without it, your
+                            application will hammer the RPC endpoint during outages, potentially getting rate-limited
+                            or banned.
+                        </div>
+                    </div>
+
+                    <h2 id="multi-contract">Multi-Contract Monitoring</h2>
+                    <p>
+                        Real applications often need to monitor events from multiple contracts simultaneously. Here's
+                        how to do it efficiently:
+                    </p>
+
+                    <pre><code>use futures::stream::{self, SelectAll};
+
+async fn monitor_multiple_contracts(
+    provider: Arc<Provider>,
+    contracts: Vec<Address>,
+) -> Result<SelectAll<impl Stream<Item = Log>>> {
+    let streams = contracts
+        .into_iter()
+        .map(|address| {
+            let filter = Filter::new().address(address);
+            provider.subscribe_logs(&filter)
+        })
+        .collect::<Vec<_>>();
+
+    // Wait for all subscriptions to establish
+    let streams = futures::future::try_join_all(streams).await?;
+
+    // Merge all streams into one
+    Ok(stream::select_all(streams))
+}</code></pre>
+
+                    <h2 id="conclusion">Conclusion</h2>
+                    <p>
+                        Event monitoring with Alloy combines elegant APIs with production-ready reliability. By
+                        understanding stream processing patterns and implementing proper error handling, you can build
+                        systems that scale from development to production seamlessly.
+                    </p>
+                </div>
+            </article>
+
+            <!-- Related Articles -->
+            <div class="related-articles">
+                <h2 class="related-title">Related Articles</h2>
+                <div class="related-grid">
+                    <a href="#" class="related-card">
+                        <div class="related-card-title">Advanced Transaction Composition and Gas Management</div>
+                        <div class="related-card-meta">Part 2 • 12 min read</div>
+                    </a>
+                    <a href="#" class="related-card">
+                        <div class="related-card-title">Connect, Deploy, Interact: Getting Started with Alloy</div>
+                        <div class="related-card-meta">Part 1 • 10 min read</div>
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar - Table of Contents with Active Tracking -->
+        <aside class="article-toc">
+            <div class="toc-title">On This Page</div>
+            <ul class="toc-list">
+                <li><a href="#understanding" data-section="understanding">Understanding Event Streams</a></li>
+                <li><a href="#stream-model" class="toc-h3" data-section="stream-model">The Stream Processing Model</a></li>
+                <li><a href="#production" data-section="production">Production Patterns</a></li>
+                <li><a href="#disconnections" class="toc-h3" data-section="disconnections">Handling Disconnections</a></li>
+                <li><a href="#multi-contract" data-section="multi-contract">Multi-Contract Monitoring</a></li>
+                <li><a href="#conclusion" data-section="conclusion">Conclusion</a></li>
+            </ul>
+        </aside>
+    </div>
+
+    <script>
+        // Active TOC Highlighting with Intersection Observer
+        (function() {
+            const tocLinks = document.querySelectorAll('.toc-list a[data-section]');
+            const sections = document.querySelectorAll('.article-content h2[id], .article-content h3[id]');
+
+            const observerOptions = {
+                rootMargin: '-100px 0px -66%',
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+
+                        // Remove active from all
+                        tocLinks.forEach(link => link.classList.remove('active'));
+
+                        // Add active to current
+                        const activeLink = document.querySelector(`.toc-list a[data-section="${id}"]`);
+                        if (activeLink) {
+                            activeLink.classList.add('active');
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => observer.observe(section));
+        })();
+
+        // Smooth scrolling for TOC links
+        document.querySelectorAll('.toc-list a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Share buttons functionality
+        document.querySelectorAll('.share-button').forEach((button, index) => {
+            button.addEventListener('click', () => {
+                const url = window.location.href;
+                const title = document.querySelector('h1').textContent;
+
+                if (index === 0) {
+                    // Twitter
+                    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`, '_blank');
+                } else if (index === 1) {
+                    // LinkedIn
+                    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+                } else if (index === 2) {
+                    // Copy link
+                    navigator.clipboard.writeText(url).then(() => {
+                        const originalHTML = button.innerHTML;
+                        button.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+                        button.style.color = 'rgb(var(--color-accent))';
+                        setTimeout(() => {
+                            button.innerHTML = originalHTML;
+                            button.style.color = '';
+                        }, 2000);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

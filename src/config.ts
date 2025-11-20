@@ -40,7 +40,7 @@ export const SOCIALS: SocialObjects = [
   },
   {
     name: "LinkedIn",
-    href: "https://github.com/in/edoardoierina",
+    href: "https://www.linkedin.com/in/edoardoierina",
     linkTitle: `LinkedIn`,
     active: true,
   },
@@ -52,8 +52,8 @@ export const SOCIALS: SocialObjects = [
   },
   {
     name: "Twitter",
-    href: "https://github.com/eierina",
-    linkTitle: `Twitter`,
+    href: "https://x.com/eierina",
+    linkTitle: `X`,
     active: true,
   },
 ];

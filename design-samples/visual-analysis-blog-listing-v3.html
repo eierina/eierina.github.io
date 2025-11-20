@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V3 Blog Listing - Smart Scrolling Header</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-bg: 255, 255, 255;
+            --color-text: 23, 23, 23;
+            --color-text-muted: 82, 82, 91;
+            --color-accent: 20, 184, 166;
+            --color-border: 228, 228, 231;
+            --color-subtle-bg: 249, 250, 251;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: rgb(var(--color-text));
+            background: rgb(var(--color-bg));
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Header - Smart Scrolling (hides on down-scroll, shows on up-scroll) */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            border-bottom: 1px solid rgb(var(--color-border));
+            padding: 20px 0;
+            background: rgb(var(--color-bg));
+            z-index: 100;
+            transform: translateY(0);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        header.header-hidden {
+            transform: translateY(-100%);
+        }
+
+        header.header-shadow {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .site-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: rgb(var(--color-text));
+            text-decoration: none;
+            letter-spacing: -0.01em;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .header-nav a {
+            font-size: 14px;
+            color: rgb(var(--color-text-muted));
+            text-decoration: none;
+            transition: color 0.2s;
+            font-weight: 500;
+        }
+
+        .header-nav a:hover {
+            color: rgb(var(--color-accent));
+        }
+
+        /* Main Container - Add top padding for fixed header */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 32px;
+            padding-top: 80px; /* Space for fixed header */
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0 40px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: rgb(var(--color-text-muted));
+            max-width: 600px;
+        }
+
+        /* Category Tabs - Fixed when header scrolls away */
+        .category-tabs-wrapper {
+            position: sticky;
+            top: 0;
+            background: rgb(var(--color-bg));
+            z-index: 50;
+            margin-bottom: 40px;
+            transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .category-tabs-wrapper.tabs-top {
+            top: 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 16px 0 0;
+            border-bottom: 1px solid rgb(var(--color-border));
+        }
+
+        .category-tab {
+            background: none;
+            border: none;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgb(var(--color-text-muted));
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s;
+        }
+
+        .category-tab:hover {
+            color: rgb(var(--color-text));
+        }
+
+        .category-tab.active {
+            color: rgb(var(--color-accent));
+        }
+
+        .category-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgb(var(--color-accent));
+        }
+
+        /* Article List */
+        .article-list {
+            margin-bottom: 80px;
+        }
+
+        .article-item {
+            padding: 40px 0;
+            border-bottom: 1px solid rgb(var(--color-border));
+            display: block;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .article-item:hover {
+            opacity: 0.8;
+        }
+
+        .article-item:first-child {
+            padding-top: 0;
+        }
+
+        .article-meta-line {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        .article-category-badge {
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgb(var(--color-accent));
+        }
+
+        .article-date {
+            color: rgb(var(--color-text-muted));
+        }
+
+        .article-tags {
+            display: flex;
+            gap: 8px;
+        }
+
+        .article-tag {
+            color: rgb(var(--color-text-muted));
+            transition: color 0.2s;
+        }
+
+        .article-tag:hover {
+            color: rgb(var(--color-accent));
+        }
+
+        .article-title {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            color: rgb(var(--color-text));
+            margin-bottom: 12px;
+        }
+
+        .article-excerpt {
+            font-size: 17px;
+            line-height: 1.6;
+            color: rgb(var(--color-text-muted));
+            max-width: 800px;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            padding: 40px 0 80px;
+            font-size: 14px;
+            color: rgb(var(--color-text-muted));
+        }
+
+        .pagination a {
+            color: rgb(var(--color-text));
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid rgb(var(--color-border));
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .pagination a:hover {
+            border-color: rgb(var(--color-accent));
+            color: rgb(var(--color-accent));
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid rgb(var(--color-border));
+            padding: 48px 0;
+            text-align: center;
+            color: rgb(var(--color-text-muted));
+            font-size: 14px;
+        }
+
+        footer a {
+            color: rgb(var(--color-text-muted));
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: rgb(var(--color-accent));
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .article-title {
+                font-size: 24px;
+            }
+
+            .category-tabs {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .category-tab {
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Smart Scrolling -->
+    <header id="header">
+        <div class="header-container">
+            <a href="/" class="site-logo">Blockchain Dev</a>
+            <nav class="header-nav">
+                <a href="/posts">Articles</a>
+                <a href="/tags">Topics</a>
+                <a href="/about">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Hero -->
+        <section class="hero">
+            <h1>Blockchain Development</h1>
+            <p>Deep technical explorations of Rust, Alloy, and EVM development</p>
+        </section>
+
+        <!-- Category Tabs - Becomes sticky when scrolling -->
+        <div class="category-tabs-wrapper" id="category-tabs">
+            <div class="category-tabs">
+                <button class="category-tab active">All</button>
+                <button class="category-tab">Research</button>
+                <button class="category-tab">Tutorial</button>
+                <button class="category-tab">Deep Dive</button>
+            </div>
+        </div>
+
+        <!-- Article List -->
+        <div class="article-list">
+            <!-- Article 1 -->
+            <a href="#" class="article-item">
+                <div class="article-meta-line">
+                    <span class="article-category-badge">Tutorial</span>
+                    <span class="article-date">January 20, 2025</span>
+                    <div class="article-tags">
+                        <span class="article-tag">Rust</span>
+                        <span>-</span>
+                        <span class="article-tag">Alloy</span>
+                        <span>-</span>
+                        <span class="article-tag">Events</span>
+                    </div>
+                </div>
+                <h2 class="article-title">Real-time Event Monitoring with Alloy: Stream Processing at Scale</h2>
+                <p class="article-excerpt">
+                    Learn how to build production-ready event monitoring systems using Alloy's stream processing
+                    capabilities. We'll cover everything from basic event filtering to complex multi-contract
+                    monitoring patterns with automatic reconnection and error handling.
+                </p>
+            </a>
+
+            <!-- Article 2 -->
+            <a href="#" class="article-item">
+                <div class="article-meta-line">
+                    <span class="article-category-badge">Tutorial</span>
+                    <span class="article-date">January 15, 2025</span>
+                    <div class="article-tags">
+                        <span class="article-tag">Rust</span>
+                        <span>-</span>
+                        <span class="article-tag">Alloy</span>
+                        <span>-</span>
+                        <span class="article-tag">Gas</span>
+                    </div>
+                </div>
+                <h2 class="article-title">Advanced Transaction Composition and Gas Management</h2>
+                <p class="article-excerpt">
+                    Master the art of composing complex transactions with optimal gas usage. Learn advanced patterns
+                    for nonce management, gas estimation, and EIP-1559 fee markets. Includes production-ready code
+                    examples and best practices.
+                </p>
+            </a>
+
+            <!-- Article 3 -->
+            <a href="#" class="article-item">
+                <div class="article-meta-line">
+                    <span class="article-category-badge">Deep Dive</span>
+                    <span class="article-date">January 10, 2025</span>
+                    <div class="article-tags">
+                        <span class="article-tag">Rust</span>
+                        <span>-</span>
+                        <span class="article-tag">Alloy</span>
+                        <span>-</span>
+                        <span class="article-tag">Basics</span>
+                    </div>
+                </div>
+                <h2 class="article-title">Connect, Deploy, Interact: Getting Started with Alloy</h2>
+                <p class="article-excerpt">
+                    A comprehensive introduction to Alloy, Rust's powerful Ethereum library. Set up your development
+                    environment, deploy your first smart contract, and learn the fundamentals of blockchain
+                    interaction with type-safe APIs.
+                </p>
+            </a>
+
+            <!-- Article 4 -->
+            <a href="#" class="article-item">
+                <div class="article-meta-line">
+                    <span class="article-category-badge">Research</span>
+                    <span class="article-date">January 5, 2025</span>
+                    <div class="article-tags">
+                        <span class="article-tag">EVM</span>
+                        <span>-</span>
+                        <span class="article-tag">Storage</span>
+                    </div>
+                </div>
+                <h2 class="article-title">Understanding EVM Storage Layouts in Depth</h2>
+                <p class="article-excerpt">
+                    Explore the intricacies of Ethereum's storage model. From simple value types to complex nested
+                    mappings, understand how the EVM organizes contract state and optimize your contracts for gas
+                    efficiency.
+                </p>
+            </a>
+
+            <!-- Article 5 -->
+            <a href="#" class="article-item">
+                <div class="article-meta-line">
+                    <span class="article-category-badge">Tutorial</span>
+                    <span class="article-date">December 28, 2024</span>
+                    <div class="article-tags">
+                        <span class="article-tag">MEV</span>
+                        <span>-</span>
+                        <span class="article-tag">Security</span>
+                    </div>
+                </div>
+                <h2 class="article-title">Building MEV-Aware Applications with Flashbots</h2>
+                <p class="article-excerpt">
+                    Protect your users from frontrunning and sandwich attacks. Learn to integrate Flashbots and
+                    build MEV-aware applications that prioritize user welfare while navigating the complex MEV
+                    landscape on Ethereum.
+                </p>
+            </a>
+
+            <!-- Article 6 -->
+            <a href="#" class="article-item">
+                <div class="article-meta-line">
+                    <span class="article-category-badge">Research</span>
+                    <span class="article-date">December 20, 2024</span>
+                    <div class="article-tags">
+                        <span class="article-tag">Performance</span>
+                        <span>-</span>
+                        <span class="article-tag">RPC</span>
+                    </div>
+                </div>
+                <h2 class="article-title">Optimizing RPC Calls: Batching and Caching Strategies</h2>
+                <p class="article-excerpt">
+                    Reduce latency and improve throughput with smart RPC optimization. Implement batching, caching,
+                    and connection pooling for production-grade applications. Includes benchmarks and real-world
+                    performance comparisons.
+                </p>
+            </a>
+
+            <!-- Article 7 -->
+            <a href="#" class="article-item">
+                <div class="article-meta-line">
+                    <span class="article-category-badge">Research</span>
+                    <span class="article-date">December 15, 2024</span>
+                    <div class="article-tags">
+                        <span class="article-tag">Security</span>
+                        <span>-</span>
+                        <span class="article-tag">Solidity</span>
+                    </div>
+                </div>
+                <h2 class="article-title">Common Smart Contract Vulnerabilities and How to Avoid Them</h2>
+                <p class="article-excerpt">
+                    A practical guide to smart contract security. Learn about reentrancy, integer overflow, access
+                    control issues, and how to write secure Solidity code. Based on real audit findings and industry
+                    best practices.
+                </p>
+            </a>
+
+            <!-- Article 8 -->
+            <a href="#" class="article-item">
+                <div class="article-meta-line">
+                    <span class="article-category-badge">Deep Dive</span>
+                    <span class="article-date">December 10, 2024</span>
+                    <div class="article-tags">
+                        <span class="article-tag">Rust</span>
+                        <span>-</span>
+                        <span class="article-tag">Testing</span>
+                    </div>
+                </div>
+                <h2 class="article-title">Property-Based Testing for Smart Contracts with Alloy</h2>
+                <p class="article-excerpt">
+                    Go beyond unit tests with property-based testing. Discover invariants, generate test cases
+                    automatically, and catch edge cases before they reach production. Includes integration with
+                    fuzzing tools.
+                </p>
+            </a>
+
+            <!-- Article 9 -->
+            <a href="#" class="article-item">
+                <div class="article-meta-line">
+                    <span class="article-category-badge">Tutorial</span>
+                    <span class="article-date">December 5, 2024</span>
+                    <div class="article-tags">
+                        <span class="article-tag">DeFi</span>
+                        <span>-</span>
+                        <span class="article-tag">Oracles</span>
+                    </div>
+                </div>
+                <h2 class="article-title">Building Reliable Oracle Integrations for DeFi Applications</h2>
+                <p class="article-excerpt">
+                    Oracle failures cause millions in losses. Learn to integrate Chainlink, implement fallback
+                    strategies, detect price manipulation, and build resilient DeFi applications that handle oracle
+                    edge cases gracefully.
+                </p>
+            </a>
+
+            <!-- Article 10 -->
+            <a href="#" class="article-item">
+                <div class="article-meta-line">
+                    <span class="article-category-badge">Research</span>
+                    <span class="article-date">November 28, 2024</span>
+                    <div class="article-tags">
+                        <span class="article-tag">L2</span>
+                        <span>-</span>
+                        <span class="article-tag">Scaling</span>
+                    </div>
+                </div>
+                <h2 class="article-title">Layer 2 Deep Dive: Optimistic vs ZK Rollups</h2>
+                <p class="article-excerpt">
+                    Compare the two dominant L2 scaling approaches. Understand trade-offs in security, finality, and
+                    developer experience. Includes practical migration guides and deployment considerations for both
+                    approaches.
+                </p>
+            </a>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <span>Page 1 of 5</span>
+            <a href="#">Next →</a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>© 2025 Blockchain Dev • Built with Astro • <a href="/rss.xml">RSS</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Smart Header: Hide on scroll down, show on scroll up
+        (function() {
+            const header = document.getElementById('header');
+            const categoryTabs = document.getElementById('category-tabs');
+            let lastScrollTop = 0;
+            let scrollThreshold = 10;
+
+            window.addEventListener('scroll', () => {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+                // Add shadow to header when scrolled
+                if (scrollTop > 10) {
+                    header.classList.add('header-shadow');
+                } else {
+                    header.classList.remove('header-shadow');
+                }
+
+                // Add shadow to tabs when they stick to top
+                if (scrollTop > 300) {
+                    categoryTabs.classList.add('tabs-top');
+                } else {
+                    categoryTabs.classList.remove('tabs-top');
+                }
+
+                // Hide/show header based on scroll direction
+                if (Math.abs(scrollTop - lastScrollTop) > scrollThreshold) {
+                    if (scrollTop > lastScrollTop && scrollTop > 100) {
+                        // Scrolling down & past threshold
+                        header.classList.add('header-hidden');
+                    } else {
+                        // Scrolling up
+                        header.classList.remove('header-hidden');
+                    }
+                    lastScrollTop = scrollTop;
+                }
+            }, { passive: true });
+        })();
+
+        // Category tab functionality
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

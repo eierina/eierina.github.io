@@ -19,8 +19,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 <Layout>
   <Header />
   <main id="main-content">
-    <Hr />
-
+    
     {
       featuredPosts.length > 0 && (
         <>
@@ -35,7 +34,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
               ))}
             </ul>
           </section>
-          {recentPosts.length > 0 && <Hr />}
+          {recentPosts.length > 0 && <div class="pb-6"></div>}
         </>
       )
     }
@@ -43,7 +42,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
     {
       recentPosts.length > 0 && (
         <section id="recent-posts">
-          <h1>Recent Posts</h1>
+          <h1 class="sr-only">Recent Posts</h1>
           <ul>
             {recentPosts.map(
               ({ data, slug }, index) =>
@@ -105,10 +104,10 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
   }
   #featured h1,
   #recent-posts h1 {
-    @apply text-2xl font-semibold tracking-wide;
+    @apply mb-6 text-5xl font-extrabold tracking-[-0.03em];
   }
   #recent-posts h2 {
-    @apply text-lg font-semibold tracking-wide;
+    @apply mb-4 text-[32px] font-bold tracking-[-0.02em];
   }
   .all-posts-btn-wrapper {
     @apply my-8 text-center;
