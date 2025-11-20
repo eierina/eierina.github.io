@@ -42,7 +42,7 @@ export default function Card({ href, frontmatter, secHeading = true }: Props) {
           </h3>
         )}
         
-        <p className="max-w-[800px] text-[17px] leading-[1.6] text-skin-muted">
+        <p className="max-w-[800px] text-[17px] leading-[1.6] text-skin-base">
           {description}
         </p>
       </a>

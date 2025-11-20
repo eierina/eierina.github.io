@@ -7,7 +7,21 @@ import getSortedPosts from "@utils/getSortedPosts";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = await getCollection("blog", ({ data }) => !data.draft);
-  return paginate(getSortedPosts(posts), { pageSize: SITE.postPerPage });
+  const sortedPosts = getSortedPosts(posts);
+  const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
+  
+  const allPages = paginate(recentPosts, { pageSize: SITE.postPerPage });
+  
+  // Drop the first page (handled by index.astro)
+  const pages = allPages.slice(1);
+  
+  // Fix the "Previous" link on the first generated page (which is actually Page 2)
+  // to point to the root "/" instead of "/posts/" or "/posts/1"
+  if (pages.length > 0) {
+    pages[0].props.page.url.prev = "/";
+  }
+
+  return pages;
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;

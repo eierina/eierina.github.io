@@ -1,10 +1,10 @@
 ---
 import Layout from "@layouts/Layout.astro";
-import Main from "@layouts/Main.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import Pagination from "@components/Pagination.astro";
 import Card from "@components/Card";
+import CategoryTabs from "@components/CategoryTabs.astro";
 import { SITE } from "@config";
 import type { Page } from "astro";
 import type { CollectionEntry } from "astro:content";
@@ -18,17 +18,37 @@ const { page } = Astro.props;
 
 <Layout title={`Posts | ${SITE.title}`}>
   <Header activeNav="posts" />
-  <Main pageTitle="Posts" pageDesc="All the articles I've posted.">
-    <ul>
-      {
-        page.data.map(({ data, slug }) => (
-          <Card href={`/posts/${slug}/`} frontmatter={data} />
-        ))
-      }
-    </ul>
-  </Main>
+  <div class="mx-auto w-full max-w-5xl px-4">
+    <p class="mt-4 hidden text-left text-sm italic text-skin-muted sm:block">
+      A developer's take on mastery and exploration of<br />blockchain technology for fun and profit.
+    </p>
+  </div>
+
+  <main id="main-content">
+    <CategoryTabs activeCategory="All" />
+    
+    <section id="recent-posts">
+      <h1 class="sr-only">Recent Posts</h1>
+      <ul>
+        {
+          page.data.map(({ data, slug }) => (
+            <Card href={`/posts/${slug}/`} frontmatter={data} />
+          ))
+        }
+      </ul>
+    </section>
+  </main>
 
   <Pagination {page} />
 
   <Footer noMarginTop={page.lastPage > 1} />
 </Layout>
+
+<style>
+  #main-content {
+    @apply mx-auto w-full max-w-5xl px-4 pb-12;
+  }
+  #recent-posts {
+    @apply mx-0 max-w-none px-0 pb-6 pt-6;
+  }
+</style>
