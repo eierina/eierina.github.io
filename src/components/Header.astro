@@ -13,25 +13,20 @@ const { activeNav } = Astro.props;
 <header class="border-b border-skin-line bg-skin-fill py-5">
   <a id="skip-to-content" href="#main-content">Skip to content</a>
   <div class="mx-auto flex max-w-5xl items-center justify-between px-4">
-    <div class="flex flex-col">
-      <a href="/" class="text-xl font-bold tracking-tight text-skin-base hover:text-skin-accent">
-        {
-          LOGO_IMAGE.enable ? (
-            <img
-              src={`/assets/${LOGO_IMAGE.svg ? "logo.svg" : "logo.png"}`}
-              alt={SITE.title}
-              width={LOGO_IMAGE.width}
-              height={LOGO_IMAGE.height}
-            />
-          ) : (
-            SITE.title
-          )
-        }
-      </a>
-      <p class="mt-1 hidden text-sm italic text-skin-muted sm:block">
-        A developer's take on mastery and exploration of<br />blockchain technology for fun and profit.
-      </p>
-    </div>
+    <a href="/" class="text-xl font-bold tracking-tight text-skin-base hover:text-skin-accent">
+      {
+        LOGO_IMAGE.enable ? (
+          <img
+            src={`/assets/${LOGO_IMAGE.svg ? "logo.svg" : "logo.png"}`}
+            alt={SITE.title}
+            width={LOGO_IMAGE.width}
+            height={LOGO_IMAGE.height}
+          />
+        ) : (
+          SITE.title
+        )
+      }
+    </a>
 
     <nav id="nav-menu">
       <button
@@ -131,6 +126,11 @@ const { activeNav } = Astro.props;
     </nav>
   </div>
 </header>
+<div class="mx-auto w-full max-w-5xl px-4">
+  <p class="mt-4 hidden text-left text-sm italic text-skin-muted sm:block">
+    A developer's take on mastery and exploration of<br />blockchain technology for fun and profit.
+  </p>
+</div>
 
 <style>
   #skip-to-content {
