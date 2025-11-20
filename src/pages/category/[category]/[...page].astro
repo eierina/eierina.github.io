@@ -1,0 +1,67 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@layouts/Layout.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import Card from "@components/Card";
+import Pagination from "@components/Pagination.astro";
+import CategoryTabs from "@components/CategoryTabs.astro";
+import getSortedPosts from "@utils/getSortedPosts";
+import { SITE } from "@config";
+import type { GetStaticPathsOptions } from "astro";
+
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  const categories = ["Research", "Tutorial", "Deep Dive"];
+  
+  return categories.flatMap(category => {
+    const filteredPosts = posts.filter(post => post.data.category === category);
+    const sortedPosts = getSortedPosts(filteredPosts);
+
+    return paginate(sortedPosts, {
+      params: { category: category.toLowerCase().replace(" ", "-") },
+      props: { categoryName: category },
+      pageSize: SITE.postPerPage,
+    });
+  });
+}
+
+const { page, categoryName } = Astro.props;
+---
+
+<Layout title={`${categoryName} | ${SITE.title}`}>
+  <Header />
+  <div class="mx-auto w-full max-w-5xl px-4">
+    <p class="mt-4 hidden text-left text-sm italic text-skin-muted sm:block">
+      A developer's take on mastery and exploration of<br />blockchain technology for fun and profit.
+    </p>
+  </div>
+  <main id="main-content">
+    <CategoryTabs activeCategory={categoryName} />
+    
+    <section id="category-posts">
+      <ul>
+        {
+          page.data.map(({ data, slug }) => (
+            <Card
+              href={`/posts/${slug}/`}
+              frontmatter={data}
+            />
+          ))
+        }
+      </ul>
+    </section>
+  </main>
+
+  <Pagination {page} />
+  <Footer />
+</Layout>
+
+<style>
+  #main-content {
+    @apply mx-auto w-full max-w-5xl px-4 pb-12;
+  }
+  #category-posts {
+    @apply mx-0 max-w-none px-0 pb-6 pt-6;
+  }
+</style>

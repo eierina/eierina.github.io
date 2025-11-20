@@ -12,7 +12,8 @@ interface EditPostProps {
 }
 
 interface TagProps {
-  tags?: string[]
+  tags?: string[];
+  category?: string;
 }
 
 interface Props extends DatetimesProps, EditPostProps, TagProps {
@@ -27,101 +28,67 @@ export default function Datetime({
   className = "",
   editPost,
   postId,
-  tags
+  tags = [],
+  category
 }: Props) {
-  return (
-    <div
-      className={`flex items-center space-x-2 opacity-80 ${className}`.trim()}
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className={`${
-          size === "sm" ? "scale-90" : "scale-100"
-        } inline-block h-6 w-6 min-w-[1.375rem] fill-skin-base`}
-        aria-hidden="true"
-      >
-        <path d="M7 11h2v2H7zm0 4h2v2H7zm4-4h2v2h-2zm0 4h2v2h-2zm4-4h2v2h-2zm0 4h2v2h-2z"></path>
-        <path d="M5 22h14c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2h-2V2h-2v2H9V2H7v2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2zM19 8l.001 12H5V8h14z"></path>
-      </svg>
-      {modDatetime && modDatetime > pubDatetime ? (
-        <span className={`italic ${size === "sm" ? "text-sm" : "text-base"}`}>
-          Updated:
-        </span>
-      ) : (
-        <span className="sr-only">Published:</span>
-      )}
-      {/* <span className={`italic ${size === "sm" ? "text-sm" : "text-base"}`}> */}
-      <div
-        className={`flex items-center italic ${
-          size === "sm" ? "text-sm" : "text-base"
-        } space-x-2`}
-      >
-        <FormattedDatetime
-          pubDatetime={pubDatetime}
-          modDatetime={modDatetime}
-        />        
-        { tags && (
-          <>
-            <span>-</span>
-            <ul className="flex space-x-2">
-              {tags.map((tag: string, index: number) => (
-                <li
-                key={index}
-                className="flex items-center space-x-0.5 lowercase rounded-full border border-transparent bg-[rgb(var(--color-card))] px-2"
-              >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-3 w-3 skew-x-[-10deg]"
-                  >
-                    <line x1="4" x2="20" y1="9" y2="9"></line>
-                    <line x1="4" x2="20" y1="15" y2="15"></line>
-                    <line x1="10" x2="8" y1="3" y2="21"></line>
-                    <line x1="16" x2="14" y1="3" y2="21"></line>
-                  </svg>
-                <span>{tag.replace(/\s+/g, '-')}</span>
-              </li>
-              ))}
-            </ul>
-          </>
-        )}
-        {size === "lg" && <EditPost editPost={editPost} postId={postId} />}
-        </div>
-      {/* </span> */}
-    </div>
-  );
-}
-
-const FormattedDatetime = ({ pubDatetime, modDatetime }: DatetimesProps) => {
   const myDatetime = new Date(
     modDatetime && modDatetime > pubDatetime ? modDatetime : pubDatetime
   );
 
   const date = myDatetime.toLocaleDateString(LOCALE.langTag, {
     year: "numeric",
-    month: "short",
+    month: "long",
     day: "numeric",
   });
 
-  const time = myDatetime.toLocaleTimeString(LOCALE.langTag, {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  if (size === "sm") {
+    // V4 Listing Style: [Category] [Date] [Tag 0] - [Tag 1]...
+    return (
+      <div className={`flex items-center gap-4 text-[13px] text-skin-muted mb-3 ${className}`}>
+        {category && (
+          <span className="font-semibold uppercase tracking-[0.08em] text-skin-accent">
+            {category}
+          </span>
+        )}
+        <span className="text-skin-muted">{date}</span>
+        {tags.length > 0 && (
+          <div className="flex gap-2 text-skin-muted">
+            {tags.map((tag, index) => (
+              <span key={tag} className="flex items-center gap-2 transition-colors hover:text-skin-accent">
+                {index === 0 ? "" : <span>-</span>}
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
 
+  // Size "lg" (Post Details) - V5 Style with Icons
   return (
-    <>
-      <time dateTime={myDatetime.toISOString()}>{date}</time>
-      <span aria-hidden="true"> | </span>
-      <span className="sr-only">&nbsp;at&nbsp;</span>
-      <span className="text-nowrap">{time}</span>
-    </>
+    <div className={`flex items-center gap-6 text-sm text-skin-muted ${className}`}>
+      <div className="flex items-center gap-1.5">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <time dateTime={myDatetime.toISOString()}>{date}</time>
+      </div>
+      
+      {/* Placeholder for Read Time if we had it, or Author */}
+      {/* <div className="flex items-center gap-1.5">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+           <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <span>{SITE.author}</span>
+      </div> */}
+
+      {size === "lg" && <EditPost editPost={editPost} postId={postId} />}
+    </div>
   );
-};
+}
 
 const EditPost = ({ editPost, postId }: EditPostProps) => {
   let editPostUrl = editPost?.url ?? SITE?.editPost?.url ?? "";
@@ -138,24 +105,17 @@ const EditPost = ({ editPost, postId }: EditPostProps) => {
       <>
         <span aria-hidden="true"> | </span>
         <a
-          className="space-x-1.5 hover:opacity-75"
+          className="hover:opacity-75"
           href={editPostUrl}
           rel="noopener noreferrer"
           target="_blank"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="icon icon-tabler icons-tabler-outline icon-tabler-edit inline-block !scale-90 fill-skin-base"
-            aria-hidden="true"
-          >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-            <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-            <path d="M16 5l3 3" />
-          </svg>
-          <span className="text-base italic">{editPostText}</span>
+          <span className="italic">{editPostText}</span>
         </a>
       </>
     )
   );
 };
+
+
+

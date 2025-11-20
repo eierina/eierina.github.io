@@ -1,7 +1,6 @@
 ---
 import { LOCALE, SITE } from "@config";
 import "@styles/base.css";
-import { ViewTransitions } from "astro:transitions";
 
 const googleSiteVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
 const umamiWebsiteId = import.meta.env.UMAMI_WEBSITE_ID;
@@ -124,19 +123,12 @@ const structuredData = {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
       rel="preload"
       as="style"
       onload="this.onload=null; this.rel='stylesheet';"
       crossorigin
     />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fira+Code:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap"
-      rel="preload"
-      as="style"
-      onload="this.onload=null; this.rel='stylesheet';"
-      crossorigin
-    />    
 
     <meta name="theme-color" content="" />
 
@@ -158,9 +150,8 @@ const structuredData = {
       onload="this.onload=null; this.rel='stylesheet';"
       crossorigin      
     />
-    <ViewTransitions />
 
-    <script is:inline src="/scripts/toggle-theme.js" async></script>
+    <script is:inline src="/scripts/toggle-theme.js"></script>
   </head>
   <body>
     <slot />

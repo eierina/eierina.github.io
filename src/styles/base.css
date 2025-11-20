@@ -5,59 +5,32 @@
 @layer base {
   :root,
   html[data-theme="light"] {
-    --color-fill: 250, 245, 230;       /* Aged parchment background */
-    --color-text-base: 60, 50, 40;     /* Deep brown text */
-    --color-accent: 200, 160, 0;       /* Antique gold accents */
-    --color-card: 255, 250, 240;       /* Light parchment cards */
-    --color-card-muted: 240, 235, 220; /* Hover state */
-    --color-border: 190, 170, 140;     /* Soft brown borders */
+    --color-fill: 255, 255, 255;
+    --color-text-base: 23, 23, 23;
+    --color-text-muted: 82, 82, 91;
+    --color-accent: 20, 184, 166;
+    --color-card: 249, 250, 251;
+    --color-card-muted: 228, 228, 231;
+    --color-border: 228, 228, 231;
+
+    /* Code block colors */
+    --color-code-bg: 246, 248, 250;
+    --color-code-border: 208, 215, 222;
   }
+
   html[data-theme="dark"] {
-    --color-fill: 30, 25, 20;         /* Dark sepia background */
-    --color-text-base: 220, 200, 180; /* Warm beige text */
-    --color-accent: 200, 160, 0;      /* Antique gold accents */
-    --color-card: 45, 40, 35;         /* Dark card background */
-    --color-card-muted: 60, 55, 50;   /* Hover state */
-    --color-border: 80, 70, 60;       /* Dark brown borders */
+    --color-fill: 23, 23, 23;
+    --color-text-base: 235, 235, 235;
+    --color-text-muted: 161, 161, 170;
+    --color-accent: 45, 212, 191;
+    --color-card: 30, 30, 30;
+    --color-card-muted: 63, 63, 70;
+    --color-border: 63, 63, 70;
+
+    /* Code block colors (Dark) */
+    --color-code-bg: 30, 30, 30;
+    --color-code-border: 63, 63, 70;
   }
-/*
-html[data-theme="light"] {
-  --color-fill: 240, 240, 240;
-  --color-text-base: 30, 30, 30;
-  --color-accent: 200, 160, 0;
-  --color-card: 255, 255, 255;
-  --color-card-muted: 225, 225, 225;
-  --color-border: 200, 200, 200;
-}
-
-html[data-theme="dark"] {
-  --color-fill: 10, 10, 10;
-  --color-text-base: 235, 235, 235;
-  --color-accent: 200, 160, 0;
-  --color-card: 20, 20, 20;
-  --color-card-muted: 30, 30, 30;
-  --color-border: 60, 60, 60;
-}
-*/
-/* Bold Black Theme */
-
-html[data-theme="light"] {
-  --color-fill: 255, 255, 255;       /* White background */
-  --color-text-base: 0, 0, 0;        /* Black text */
-  --color-accent: 255, 193, 7;       /* Amber accent */
-  --color-card: 245, 245, 245;       /* Light gray cards */
-  --color-card-muted: 230, 230, 230; /* Hover state */
-  --color-border: 200, 200, 200;     /* Gray borders */
-}
-
-html[data-theme="dark"] {
-  --color-fill: 0, 0, 0;             /* Black background */
-  --color-text-base: 245, 245, 245;  /* Light gray text */
-  --color-accent: 255, 193, 7;       /* Amber accent */
-  --color-card: 20, 20, 20;          /* Slightly lighter card background */
-  --color-card-muted: 40, 40, 40;    /* Hover state */
-  --color-border: 80, 80, 80;        /* Dark gray borders */
-}
 
   #sun-svg,
   html[data-theme="dark"] #moon-svg {
@@ -67,42 +40,53 @@ html[data-theme="dark"] {
   html[data-theme="dark"] #sun-svg {
     display: block;
   }
+
   body {
-    @apply flex min-h-[100svh] flex-col bg-skin-fill font-mono text-skin-base selection:bg-skin-accent/70 selection:text-skin-inverted;
+    @apply flex min-h-[100svh] flex-col bg-skin-fill font-sans text-skin-base selection:bg-skin-accent/70 selection:text-skin-inverted;
   }
-  section,
-  footer {
+
+  section {
     @apply mx-auto max-w-5xl px-4;
   }
+
   a {
     @apply outline-2 outline-offset-1 outline-skin-fill focus-visible:no-underline focus-visible:outline-dashed;
   }
+
   svg {
     @apply inline-block h-6 w-6 fill-skin-base group-hover:fill-skin-accent;
   }
+
   svg.icon-tabler {
     @apply inline-block h-6 w-6 scale-125 fill-transparent stroke-current stroke-2 opacity-90 group-hover:fill-transparent sm:scale-110;
   }
+
   .prose {
-    @apply prose-headings:!mb-3 prose-headings:!text-skin-base prose-h3:italic prose-p:!text-skin-base prose-a:!text-skin-base prose-a:!decoration-dashed prose-a:underline-offset-8 hover:prose-a:text-skin-accent prose-blockquote:!border-l-skin-accent/50 prose-blockquote:opacity-80 prose-figcaption:!text-skin-base prose-figcaption:opacity-70 prose-strong:!text-skin-base prose-code:rounded prose-code:bg-skin-card/75 prose-code:p-1 prose-code:before:!content-none prose-code:after:!content-none prose-ol:!text-skin-base prose-ul:overflow-x-clip prose-ul:!text-skin-base prose-li:marker:!text-skin-accent prose-table:text-skin-base prose-th:border prose-th:border-skin-line prose-td:border prose-td:border-skin-line prose-img:!my-2 prose-img:mx-auto prose-img:border-2 prose-img:border-skin-line prose-hr:!border-skin-line;
+    @apply prose-headings:!mb-3 prose-headings:!text-skin-base prose-h3:italic prose-p:!text-skin-muted prose-a:!text-skin-base prose-a:!decoration-dashed prose-a:underline-offset-8 hover:prose-a:text-skin-accent prose-blockquote:!border-l-skin-accent/50 prose-blockquote:opacity-80 prose-figcaption:!text-skin-base prose-figcaption:opacity-70 prose-strong:!text-skin-base prose-code:rounded prose-code:bg-skin-card/75 prose-code:p-1 prose-code:before:!content-none prose-code:after:!content-none prose-ol:!text-skin-muted prose-ul:overflow-x-clip prose-ul:!text-skin-muted prose-li:marker:!text-skin-accent prose-table:text-skin-base prose-th:border prose-th:border-skin-line prose-td:border prose-td:border-skin-line prose-img:!my-2 prose-img:mx-auto prose-img:border-2 prose-img:border-skin-line prose-hr:!border-skin-line;
   }
+
   .prose a {
     @apply break-words hover:!text-skin-accent;
   }
+
   .prose thead th:first-child,
   tbody td:first-child,
   tfoot td:first-child {
     padding-left: 0.5714286em;
   }
+
   .prose h2#table-of-contents {
     @apply mb-2;
   }
+
   .prose details {
     @apply inline-block cursor-pointer select-none text-skin-base;
   }
+
   .prose summary {
     @apply focus-outline;
   }
+
   .prose h2#table-of-contents + p {
     @apply hidden;
   }
@@ -134,8 +118,15 @@ html[data-theme="dark"] {
 
   /* ===== Code Blocks & Syntax Highlighting ===== */
   pre:has(code) {
-    @apply border border-skin-line;
+    @apply border border-skin-line p-4 rounded-xl overflow-x-auto my-8;
+    background-color: rgb(var(--color-code-bg));
+    border-color: rgb(var(--color-code-border));
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   }
+
   code,
   blockquote {
     word-wrap: break-word;
@@ -143,9 +134,13 @@ html[data-theme="dark"] {
 
   pre > code {
     white-space: pre;
+    background: none;
+    padding: 0;
+    border: none;
+    color: rgb(var(--color-text-base));
   }
 
-  /* Apply Dark Theme (if multi-theme specified) */
+  /* Apply Dark Theme for Shiki */
   html[data-theme="dark"] pre:has(code),
   html[data-theme="dark"] pre:has(code) span {
     color: var(--shiki-dark) !important;

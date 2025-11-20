@@ -9,17 +9,43 @@ import Card from "@components/Card";
 import getSortedPosts from "@utils/getSortedPosts";
 import { SITE, SOCIALS } from "@config";
 
+import CategoryTabs from "@components/CategoryTabs.astro";
+import Pagination from "@components/Pagination.astro";
+
 const posts = await getCollection("blog");
 
 const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
+
+const totalPages = Math.ceil(recentPosts.length / SITE.postPerPage);
+const paginatedPosts = recentPosts.slice(0, SITE.postPerPage);
+
+const page = {
+  data: paginatedPosts,
+  start: 0,
+  end: SITE.postPerPage - 1,
+  size: SITE.postPerPage,
+  total: recentPosts.length,
+  currentPage: 1,
+  lastPage: totalPages,
+  url: {
+    current: "/",
+    prev: undefined,
+    next: totalPages > 1 ? "/posts/2" : undefined,
+  },
+};
 ---
 
 <Layout>
-  <Header />
+  <Header activeNav="posts" />
+  <div class="mx-auto w-full max-w-5xl px-4">
+    <p class="mt-4 hidden text-left text-sm italic text-skin-muted sm:block">
+      A developer's take on mastery and exploration of<br />blockchain technology for fun and profit.
+    </p>
+  </div>
   <main id="main-content">
-    <Hr />
+    <CategoryTabs activeCategory="All" />
 
     {
       featuredPosts.length > 0 && (
@@ -35,19 +61,19 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
               ))}
             </ul>
           </section>
-          {recentPosts.length > 0 && <Hr />}
+          {paginatedPosts.length > 0 && <div class="pb-6"></div>}
         </>
       )
     }
 
     {
-      recentPosts.length > 0 && (
+      paginatedPosts.length > 0 && (
         <section id="recent-posts">
-          <h1>Recent Posts</h1>
+          <h1 class="sr-only">Recent Posts</h1>
           <ul>
-            {recentPosts.map(
+            {paginatedPosts.map(
               ({ data, slug }, index) =>
-                index < SITE.postPerIndex && (
+                index < SITE.postPerPage && (
                   <Card
                     href={`/posts/${slug}/`}
                     frontmatter={data}
@@ -58,19 +84,9 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
         </section>
       )
     }
-
-    <div class="all-posts-btn-wrapper">
-      <LinkButton href="/posts/">
-        All Posts
-        <svg xmlns="http://www.w3.org/2000/svg"
-          ><path
-            d="m11.293 17.293 1.414 1.414L19.414 12l-6.707-6.707-1.414 1.414L15.586 11H6v2h9.586z"
-          ></path>
-        </svg>
-      </LinkButton>
-    </div>
   </main>
 
+  <Pagination {page} />
   <Footer />
 </Layout>
 
@@ -101,16 +117,25 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
   /* ===== Featured & Recent Posts Sections ===== */
   #featured,
   #recent-posts {
-    @apply pb-6 pt-12;
+    @apply pb-6 pt-6;
   }
   #featured h1,
   #recent-posts h1 {
-    @apply text-2xl font-semibold tracking-wide;
+    @apply mb-6 text-5xl font-extrabold tracking-[-0.03em];
   }
   #recent-posts h2 {
-    @apply text-lg font-semibold tracking-wide;
+    @apply mb-4 text-[32px] font-bold tracking-[-0.02em];
   }
   .all-posts-btn-wrapper {
     @apply my-8 text-center;
   }
-</style>
+
+  #main-content {
+    @apply mx-auto w-full max-w-5xl px-4 pb-12;
+  }
+
+  /* Override global section styles to prevent double padding/constraints */
+  #featured,
+  #recent-posts {
+    @apply mx-0 max-w-none px-0;
+  }
