@@ -9,6 +9,8 @@ import Card from "@components/Card";
 import getSortedPosts from "@utils/getSortedPosts";
 import { SITE, SOCIALS } from "@config";
 
+import CategoryTabs from "@components/CategoryTabs.astro";
+
 const posts = await getCollection("blog");
 
 const sortedPosts = getSortedPosts(posts);
@@ -19,7 +21,8 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 <Layout>
   <Header />
   <main id="main-content">
-    
+    <CategoryTabs activeCategory="All" />
+
     {
       featuredPosts.length > 0 && (
         <>
@@ -100,7 +103,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
   /* ===== Featured & Recent Posts Sections ===== */
   #featured,
   #recent-posts {
-    @apply pb-6 pt-12;
+    @apply pb-6 pt-6;
   }
   #featured h1,
   #recent-posts h1 {
@@ -112,4 +115,13 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
   .all-posts-btn-wrapper {
     @apply my-8 text-center;
   }
-</style>
+
+  #main-content {
+    @apply mx-auto w-full max-w-5xl px-4 pb-12;
+  }
+
+  /* Override global section styles to prevent double padding/constraints */
+  #featured,
+  #recent-posts {
+    @apply mx-0 max-w-none px-0;
+  }

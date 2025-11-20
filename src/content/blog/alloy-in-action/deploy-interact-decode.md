@@ -4,6 +4,7 @@ pubDatetime: 2024-10-28T15:20:35Z
 title: Alloy in Action (Part 1) - Connect, Deploy, Interact, Decode
 featured: false
 draft: false
+category: Tutorial
 tags:
   - Alloy
   - EVM

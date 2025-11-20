@@ -1,0 +1,54 @@
+---
+export interface Props {
+  activeCategory?: "All" | "Research" | "Deep Dive" | "Tutorial";
+}
+
+const { activeCategory = "All" } = Astro.props;
+
+const categories = ["All", "Research", "Tutorial", "Deep Dive"];
+---
+
+<div class="category-tabs-wrapper">
+  <div class="category-tabs">
+    {
+      categories.map(category => (
+        <a
+          href={category === "All" ? "/" : `/category/${category.toLowerCase().replace(" ", "-")}/`}
+          class={`category-tab ${activeCategory === category ? "active" : ""}`}
+        >
+          {category}
+        </a>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .category-tabs-wrapper {
+    @apply mt-12 mb-10;
+  }
+
+  .category-tabs {
+    @apply flex gap-2 pb-0 border-b border-skin-line overflow-x-auto;
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .category-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .category-tab {
+    @apply relative cursor-pointer border-none bg-transparent px-5 py-3 text-sm font-semibold uppercase tracking-[0.05em] text-skin-muted transition-colors hover:text-skin-base whitespace-nowrap;
+  }
+
+  .category-tab.active {
+    @apply text-skin-accent;
+  }
+
+  .category-tab.active::after {
+    content: '';
+    @apply absolute bottom-[-1px] left-0 right-0 h-[2px] bg-skin-accent;
+  }
+</style>

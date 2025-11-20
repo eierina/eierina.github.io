@@ -12,7 +12,8 @@ interface EditPostProps {
 }
 
 interface TagProps {
-  tags?: string[]
+  tags?: string[];
+  category?: string;
 }
 
 interface Props extends DatetimesProps, EditPostProps, TagProps {
@@ -27,7 +28,8 @@ export default function Datetime({
   className = "",
   editPost,
   postId,
-  tags = []
+  tags = [],
+  category
 }: Props) {
   const myDatetime = new Date(
     modDatetime && modDatetime > pubDatetime ? modDatetime : pubDatetime
@@ -40,12 +42,14 @@ export default function Datetime({
   });
 
   if (size === "sm") {
-    // V4 Listing Style: [Category Static] [Date] [Tag 0] - [Tag 1]...
+    // V4 Listing Style: [Category] [Date] [Tag 0] - [Tag 1]...
     return (
       <div className={`flex items-center gap-4 text-[13px] text-skin-muted mb-3 ${className}`}>
-        <span className="font-semibold uppercase tracking-[0.08em] text-skin-accent">
-          CATEGORY
-        </span>
+        {category && (
+          <span className="font-semibold uppercase tracking-[0.08em] text-skin-accent">
+            {category}
+          </span>
+        )}
         <span className="text-skin-muted">{date}</span>
         {tags.length > 0 && (
           <div className="flex gap-2 text-skin-muted">

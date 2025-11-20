@@ -9,7 +9,7 @@ export interface Props {
 }
 
 export default function Card({ href, frontmatter, secHeading = true }: Props) {
-  const { title, pubDatetime, modDatetime, description, tags } = frontmatter;
+  const { title, pubDatetime, modDatetime, description, tags, category } = frontmatter;
   
   return (
     <li className="border-b border-skin-line py-10 transition-opacity hover:opacity-80 first:pt-0">
@@ -21,6 +21,7 @@ export default function Card({ href, frontmatter, secHeading = true }: Props) {
           pubDatetime={pubDatetime} 
           modDatetime={modDatetime} 
           tags={tags} 
+          category={category}
           size="sm" 
           className="mb-3"
         />

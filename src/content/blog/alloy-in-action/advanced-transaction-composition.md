@@ -4,6 +4,7 @@ pubDatetime: 2024-11-04T15:20:35Z
 title: Alloy in Action (Part 2) - Advanced Transaction Composition and Gas Management
 featured: false
 draft: false
+category: Tutorial
 tags:
   - Alloy
   - EVM

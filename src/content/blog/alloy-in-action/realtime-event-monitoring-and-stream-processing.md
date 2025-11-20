@@ -4,6 +4,7 @@ pubDatetime: 2024-12-06T00:47:00Z
 title: Alloy in Action (Part 3) - Real-Time Event Monitoring and Stream Processing
 featured: false
 draft: false
+category: Tutorial
 tags:
   - Alloy
   - EVM

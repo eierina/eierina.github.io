@@ -1,7 +1,6 @@
 ---
 import { LOCALE, SITE } from "@config";
 import "@styles/base.css";
-import { ViewTransitions } from "astro:transitions";
 
 const googleSiteVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
 const umamiWebsiteId = import.meta.env.UMAMI_WEBSITE_ID;
@@ -151,9 +150,8 @@ const structuredData = {
       onload="this.onload=null; this.rel='stylesheet';"
       crossorigin      
     />
-    <ViewTransitions />
 
-    <script is:inline src="/scripts/toggle-theme.js" async></script>
+    <script is:inline src="/scripts/toggle-theme.js"></script>
   </head>
   <body>
     <slot />
