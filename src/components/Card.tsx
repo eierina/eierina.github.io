@@ -12,7 +12,7 @@ export default function Card({ href, frontmatter, secHeading = true }: Props) {
   const { title, pubDatetime, modDatetime, description, tags, category } = frontmatter;
   
   return (
-    <li className="border-b border-skin-line py-10 transition-opacity hover:opacity-80 first:pt-0">
+    <li className="border-b border-skin-line py-10 transition-opacity hover:opacity-80 first:pt-0 last:border-none">
       <a
         href={href}
         className="block group"

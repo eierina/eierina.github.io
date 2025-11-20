@@ -1,27 +1,40 @@
 ---
+import { getCollection } from "astro:content";
+
 export interface Props {
-  activeCategory?: "All" | "Research" | "Deep Dive" | "Tutorial";
+  activeCategory?: string;
 }
 
 const { activeCategory = "All" } = Astro.props;
 
-const categories = ["All", "Research", "Tutorial", "Deep Dive"];
+const posts = await getCollection("blog", ({ data }) => !data.draft);
+const usedCategories = new Set(posts.map(post => post.data.category).filter(Boolean));
+
+const allDefinedCategories = ["All", "Research", "Tutorial", "Deep Dive"];
+
+const displayCategories = allDefinedCategories.filter(
+  category => category === "All" || usedCategories.has(category)
+);
 ---
 
-<div class="category-tabs-wrapper">
-  <div class="category-tabs">
-    {
-      categories.map(category => (
-        <a
-          href={category === "All" ? "/" : `/category/${category.toLowerCase().replace(" ", "-")}/`}
-          class={`category-tab ${activeCategory === category ? "active" : ""}`}
-        >
-          {category}
-        </a>
-      ))
-    }
-  </div>
-</div>
+{
+  displayCategories.length > 2 && (
+    <div class="category-tabs-wrapper">
+      <div class="category-tabs">
+        {
+          displayCategories.map(category => (
+            <a
+              href={category === "All" ? "/" : `/category/${category.toLowerCase().replace(" ", "-")}/`}
+              class={`category-tab ${activeCategory === category ? "active" : ""}`}
+            >
+              {category}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  )
+}
 
 <style>
   .category-tabs-wrapper {

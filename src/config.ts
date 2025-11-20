@@ -8,8 +8,8 @@ export const SITE: Site = {
   title: "Block::ZERO",
   ogImage: "astropaper-og.jpg",
   lightAndDarkMode: true,
-  postPerIndex: 2,
-  postPerPage: 2,
+  postPerIndex: 4,
+  postPerPage: 4,
   scheduledPostMargin: 15 * 60 * 1000, // 15 minutes
   showArchives: true,
   editPost: {
