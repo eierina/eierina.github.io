@@ -10,10 +10,10 @@ const { activeCategory = "All" } = Astro.props;
 const posts = await getCollection("blog", ({ data }) => !data.draft);
 const usedCategories = new Set(posts.map(post => post.data.category).filter(Boolean));
 
-const allDefinedCategories = ["All", "Research", "Tutorial", "Deep Dive"];
+const allDefinedCategories = ["All", "Research", "Tutorial", "Deep Dive"] as const;
 
 const displayCategories = allDefinedCategories.filter(
-  category => category === "All" || usedCategories.has(category)
+  category => category === "All" || usedCategories.has(category as "Research" | "Deep Dive" | "Tutorial")
 );
 ---
 

@@ -3,11 +3,9 @@ import { getCollection } from "astro:content";
 import Layout from "@layouts/Layout.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
-import LinkButton from "@components/LinkButton.astro";
-import Hr from "@components/Hr.astro";
 import Card from "@components/Card";
 import getSortedPosts from "@utils/getSortedPosts";
-import { SITE, SOCIALS } from "@config";
+import { SITE } from "@config";
 
 import CategoryTabs from "@components/CategoryTabs.astro";
 import Pagination from "@components/Pagination.astro";
@@ -21,10 +19,10 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 const totalPages = Math.ceil(recentPosts.length / SITE.postPerPage);
 const paginatedPosts = recentPosts.slice(0, SITE.postPerPage);
 
-const page = {
+const page: import("astro").Page<typeof recentPosts[number]> = {
   data: paginatedPosts,
   start: 0,
-  end: SITE.postPerPage - 1,
+  end: Math.min(SITE.postPerPage - 1, paginatedPosts.length - 1),
   size: SITE.postPerPage,
   total: recentPosts.length,
   currentPage: 1,
@@ -33,6 +31,8 @@ const page = {
     current: "/",
     prev: undefined,
     next: totalPages > 1 ? "/posts/2" : undefined,
+    first: "/",
+    last: totalPages > 1 ? `/posts/${totalPages}` : "/",
   },
 };
 ---
